@@ -1,0 +1,19 @@
+# Ignore node_modules at any level
+**/node_modules
+
+# Client build output
+/client/build
+/client/dist
+
+# Server build output
+/server/build
+
+# Environment variables
+.env
+
+# Editor directories
+.idea
+.vscode
+
+#migrations
+/server/migrations
