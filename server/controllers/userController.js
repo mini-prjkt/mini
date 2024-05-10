@@ -52,10 +52,13 @@ const login = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  console.log("Email received from frontend:", email);
   try {
+    console.log("Received forgot password request for email:", email); // Log the email received
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ message: "user not registered" });
+      console.log("User not found for email:", email); // Log if user not found
+      return res.json({ message: "User not registered" });
     }
     const token = jwt.sign({ id: user._id }, process.env.KEY, {
       expiresIn: "5m",
@@ -65,7 +68,7 @@ const forgotPassword = async (req, res) => {
       service: "gmail",
       auth: {
         user: "rishith2003@gmail.com",
-        pass: "uxtx dsqh euhj futf",
+        pass: "auna xkvq xllp grol",
       },
     });
     const encodedToken = encodeURIComponent(token).replace(/\./g, "%2E");
@@ -78,15 +81,19 @@ const forgotPassword = async (req, res) => {
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        return res.json({ message: "error sending email" });
+        console.error("Error sending email:", error); // Log any errors sending email
+        return res.json({ message: "Error sending email to " + email }); // Modified response message for error sending email
       } else {
-        return res.json({ status: true, message: "email sent" });
+        console.log("Email sent successfully to:", email); // Log if email sent successfully
+        return res.json({ status: true, message: "Email sent" });
       }
     });
   } catch (error) {
+    console.error("Error:", error); // Log any other errors
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 const resetPassword = async (req, res) => {
   const { token } = req.params;
