@@ -73,7 +73,7 @@ const forgotPassword = async (req, res) => {
       from: "rishith2003@gmail.com",
       to: email,
       subject: "Reset Password",
-      text: `http://localhost:5173/resetPassword/${encodedToken}`,
+      text: `http://localhost:3000/resetPassword/${encodedToken}`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
