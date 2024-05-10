@@ -19,6 +19,7 @@ const Home = () => {
     <div>Home
       <button><Link to="/dashboard" >Dashboard</Link></button>
       <br /> <br />
+      
       <button onClick={handleLogout}>Logout</button>
     </div>
   )
