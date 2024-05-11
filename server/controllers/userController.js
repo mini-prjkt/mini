@@ -65,15 +65,15 @@ const forgotPassword = async (req, res) => {
     });
 
     var transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: "hotmail",
       auth: {
-        user: "rishith2003@gmail.com",
-        pass: "auna xkvq xllp grol",
+        user: "miniprjkt@outlook.com",
+        pass: "sumalathaAradhya",
       },
     });
     const encodedToken = encodeURIComponent(token).replace(/\./g, "%2E");
     var mailOptions = {
-      from: "rishith2003@gmail.com",
+      from: "miniprjkt@outlook.com",
       to: email,
       subject: "Reset Password",
       text: `http://localhost:3000/resetPassword/${encodedToken}`,
