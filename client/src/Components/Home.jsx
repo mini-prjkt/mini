@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ const Home = () => {
   }
   return (
     <div>Home
-      <button><Link to="/dashboard" >Dashboard</Link></button>
+      <button><Link to="/welcome" >Dashboard</Link></button>
       <br /> <br />
       
       <button onClick={handleLogout}>Logout</button>

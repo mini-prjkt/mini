@@ -5,6 +5,8 @@ import Home from './Components/Home'
 import ForgotPassword from './Components/ForgotPassword'
 import ResetPassword from './Components/ResetPassword'
 import Dashboard from './Components/Dashboard'
+import Interest from './Components/Interest'
+import WelcomePage from './Components/WelcomePage'
 
 function App() {
 
@@ -17,6 +19,8 @@ function App() {
         <Route path = "/forgotPassword" element={<ForgotPassword />}></Route>
         <Route path = "/resetPassword/:token" element={<ResetPassword />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
+        <Route path="/interest" element={<Interest/>}></Route>
+        <Route path="/welcome" element={<WelcomePage/>}></Route>
       </Routes>
     </BrowserRouter>
   )

@@ -1,7 +1,7 @@
 // userRoutes.js
 
 import express from "express";
-import { signup, login, forgotPassword, resetPassword, verifyUser } from "../controllers/userController.js";
+import { signup, login, forgotPassword, resetPassword, verifyUser } from "../controllers/userController.js"; // Import addInterest
 
 const router = express.Router();
 
@@ -16,5 +16,7 @@ router.get("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ status: true });
 });
+
+
 
 export { router as UserRouter };

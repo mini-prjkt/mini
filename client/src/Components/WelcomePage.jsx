@@ -1,8 +1,8 @@
-import axios from 'axios'
 import React, { useEffect } from 'react'
+import axios from "axios";
 import { useNavigate } from 'react-router-dom'
 
-const Dashboard = () => {
+function WelcomePage() {
     const navigate = useNavigate()
     axios.defaults.withCredentials = true;
     useEffect(() => {
@@ -17,8 +17,8 @@ const Dashboard = () => {
         })
     }, [])
   return (
-    <div>Dashboard</div>
+    <div>welcome sir</div>
   )
 }
 
-export default Dashboard
+export default WelcomePage

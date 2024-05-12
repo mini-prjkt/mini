@@ -1,16 +1,16 @@
-// userController.js
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { User } from "../models/user.js";
+
+
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (user) {
-      return res.json({ message: "user already existed" });
+      return res.json({ message: "User already exists" });
     }
 
     const hashpassword = await bcrypt.hash(password, 10);
@@ -21,7 +21,7 @@ const signup = async (req, res) => {
     });
 
     await newUser.save();
-    return res.json({ status: true, message: "record registered" });
+    return res.json({ status: true, message: "Record registered" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -32,19 +32,19 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ message: "user is not registered" });
+      return res.json({ message: "User is not registered" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.json({ message: "password is incorrect" });
+      return res.json({ message: "Password is incorrect" });
     }
 
     const token = jwt.sign({ username: user.username }, process.env.KEY, {
       expiresIn: "1h",
     });
     res.cookie("token", token, { httpOnly: true, maxAge: 360000 });
-    return res.json({ status: true, message: "login successfully" });
+    return res.json({ status: true, message: "Login successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -95,7 +95,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
 const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
@@ -104,9 +103,9 @@ const resetPassword = async (req, res) => {
     const id = decoded.id;
     const hashPassword = await bcrypt.hash(password, 10);
     await User.findByIdAndUpdate({ _id: id }, { password: hashPassword });
-    return res.json({ status: true, message: "updated password" });
+    return res.json({ status: true, message: "Updated password" });
   } catch (error) {
-    return res.json("invalid token");
+    return res.json("Invalid token");
   }
 };
 
@@ -114,7 +113,7 @@ const verifyUser = async (req, res, next) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.json({ status: false, message: "no token" });
+      return res.json({ status: false, message: "No token" });
     }
     const decoded = await jwt.verify(token, process.env.KEY);
     next();
@@ -122,5 +121,8 @@ const verifyUser = async (req, res, next) => {
     return res.json(error);
   }
 };
+
+
+
 
 export { signup, login, forgotPassword, resetPassword, verifyUser };
