@@ -1,0 +1,21 @@
+# Use the official Python image as a parent image
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
+
+# Install any dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir Flask tensorflow numpy flask-cors
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Expose the port the app runs on
+EXPOSE 7860
+
+# Command to run the application
+CMD ["python", "flask_app.py"]
