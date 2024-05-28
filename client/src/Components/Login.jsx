@@ -17,7 +17,7 @@ const Login = () => {
       password,
     }).then(response => {
         if(response.data.status) {
-            navigate('/')
+            navigate('/welcome')
         }
     }).catch(err => {
         console.log(err)

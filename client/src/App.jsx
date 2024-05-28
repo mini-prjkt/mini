@@ -7,6 +7,7 @@ import ResetPassword from './Components/ResetPassword'
 import Dashboard from './Components/Dashboard'
 import Interest from './Components/Interest'
 import WelcomePage from './Components/WelcomePage'
+import LandingPage from './Components/LandingPage'
 
 function App() {
 
@@ -21,6 +22,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/interest" element={<Interest/>}></Route>
         <Route path="/welcome" element={<WelcomePage/>}></Route>
+        <Route path="/home" element={<LandingPage/>}></Route>
+
       </Routes>
     </BrowserRouter>
   )

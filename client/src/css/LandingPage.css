@@ -1,0 +1,38 @@
+.post {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .post img {
+    width: 200px; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px;
+  }
+  
+  .post-content {
+    flex: 1;
+  }
+  
+  .post-content p {
+    margin: 0 0 10px;
+  }
+  
+  .post-content a {
+    text-decoration: none;
+    color: blue;
+    margin-right: 10px;
+  }
+  
+  .post-content button {
+    background-color: #3897f0; /* Instagram blue */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .post-content button:hover {
+    background-color: #1e70bf; /* Darker blue on hover */
+  }
+  

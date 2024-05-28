@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { User } from "../models/User.js";
+import { User } from "../models/user.js";
+
 
 
 const signup = async (req, res) => {
@@ -39,11 +40,14 @@ const login = async (req, res) => {
       return res.json({ message: "Password is incorrect" });
     }
 
-    const token = jwt.sign({ username: user.username }, process.env.KEY, {
+    const token = jwt.sign({ userId: user._id, username: user.username }, process.env.KEY, {
       expiresIn: "1h",
     });
-    res.cookie("token", token, { httpOnly: true, maxAge: 360000 });
-    return res.json({ status: true, message: "Login successfully" });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 3600000
+    });
+    return res.json({ status: true, userId: user._id, message: "Login successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -59,9 +63,7 @@ const forgotPassword = async (req, res) => {
       console.log("User not found for email:", email); // Log if user not found
       return res.json({ message: "User not registered" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.KEY, {
-      expiresIn: "5m",
-    });
+    const token = jwt.sign({ id: user._id }, process.env.KEY);
 
     var transporter = nodemailer.createTransport({
       service: "hotmail",
@@ -87,7 +89,7 @@ const forgotPassword = async (req, res) => {
         return res.json({ status: true, message: "Email sent" });
       }
     });
-    
+
   } catch (error) {
     console.error("Error:", error); // Log any other errors
     return res.status(500).json({ message: error.message });
@@ -112,26 +114,19 @@ const verifyUser = async (req, res, next) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.json({ status: false, message: "No token" });
+      return res.json({ status: false, message: 'No token' });
     }
     const decoded = await jwt.verify(token, process.env.KEY);
+    req.userId = decoded.userId; // Attach userId to the request object
+    res.locals.userId = decoded.userId; // Optionally attach userId to res.locals for easy access
+    console.log(`verifyUser is attaching the userId: ${decoded.userId}`); // Log the decoded userId
     next();
   } catch (error) {
     return res.json(error);
   }
 };
 
-const logUserId = async(req,res)=>{
-  try {
-    const user = await User.findOne({username:req.username});
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    console.log(`User ID: ${user._id}`);
-    res.json({ message: `Logged user ID: ${user._id}` });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
-export { signup, login, forgotPassword, resetPassword, verifyUser , logUserId};
+
+
+export { signup, login, forgotPassword, resetPassword, verifyUser };
