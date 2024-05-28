@@ -101,7 +101,6 @@ function Interest() {
           ))}
         </ul>
       </div>
-      <a href="/welcome"><button>take to me to dashboard</button></a>
     </div>
   );
 }

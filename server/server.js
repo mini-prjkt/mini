@@ -18,6 +18,7 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use('/auth', UserRouter)
+app.use('/chat',MessageRouter)
 
 mongoose.connect('mongodb://localhost:27017/authentication')
 socket(socketServer)
