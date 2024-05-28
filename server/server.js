@@ -5,7 +5,6 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 dotenv.config()
 import { UserRouter } from './routes/userRoutes.js'
-import { MessageRouter } from './routes/messageRoutes.js'
 
 const app = express()
 app.use(express.json())
@@ -15,7 +14,6 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use('/auth', UserRouter)
-app.use('/chat',MessageRouter)
 
 mongoose.connect('mongodb://localhost:27017/authentication')
 
