@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { User } from "../models/user.js";
-
-
+import { User } from "../models/User.js";
+import { Interest } from "../models/Interest.js";
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -122,11 +121,34 @@ const verifyUser = async (req, res, next) => {
     console.log(`verifyUser is attaching the userId: ${decoded.userId}`); // Log the decoded userId
     next();
   } catch (error) {
-    return res.json(error);
+    return res.json({ status: false, message: 'Invalid token' });
+  }
+};
+
+const confirmInterest = async (req, res) => {
+  const { userId, interestName } = req.body;
+  console.log('Received userId:', userId); // Log the userId received from the frontend
+  console.log('Received interestName:', interestName); // Log the interestName received from the frontend
+  try {
+    // Check if the interest already exists
+    let interest = await Interest.findOne({ name: interestName });
+
+    // If the interest doesn't exist, create a new one
+    if (!interest) {
+      interest = new Interest({ name: interestName, createdBy: userId });
+      await interest.save();
+    }
+
+    // Update the user's interests array
+    await User.findByIdAndUpdate(userId, { $addToSet: { interests: interest._id } });
+
+    return res.json({ status: true, message: 'Interest confirmed', interest });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
 
 
 
-export { signup, login, forgotPassword, resetPassword, verifyUser };
+export { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest };
