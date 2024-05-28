@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { User } from "../models/user.js";
-
+import { User } from "../models/User.js";
 
 
 const signup = async (req, res) => {
@@ -122,7 +121,17 @@ const verifyUser = async (req, res, next) => {
   }
 };
 
+const logUserId = async(req,res)=>{
+  try {
+    const user = await User.findOne({username:req.username});
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    console.log(`User ID: ${user._id}`);
+    res.json({ message: `Logged user ID: ${user._id}` });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-
-
-export { signup, login, forgotPassword, resetPassword, verifyUser };
+export { signup, login, forgotPassword, resetPassword, verifyUser , logUserId};
