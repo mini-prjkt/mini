@@ -9,6 +9,8 @@ import Interest from './Components/Interest'
 import WelcomePage from './Components/WelcomePage'
 import LandingPage from './Components/LandingPage'
 import UserProfile from './Components/UserProfile'
+import AddPost from './Components/AddPost'
+import MyPost from './Components/MyPost'
 
 function App() {
 
@@ -25,6 +27,8 @@ function App() {
         <Route path="/welcome" element={<WelcomePage />}></Route>
         <Route path="/home" element={<LandingPage />}></Route>
         <Route path="/profile" element={<UserProfile/>}></Route>
+        <Route path="/addpost" element={<AddPost/>}></Route>
+        <Route path="/viewpost" element={<MyPost/>}></Route>
       </Routes>
     </BrowserRouter>
   )
