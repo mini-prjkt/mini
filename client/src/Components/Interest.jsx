@@ -5,13 +5,14 @@ import '../css/interest.css';
 
 function Interest() {
   const navigate = useNavigate();
-  axios.defaults.withCredentials = true;
+  
 
   const [inputText, setInputText] = useState('');
   const [interests, setInterests] = useState([]);
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
+    axios.defaults.withCredentials = true;
     const verifyUser = async () => {
       try {
         const res = await axios.get('http://localhost:5000/auth/verify');

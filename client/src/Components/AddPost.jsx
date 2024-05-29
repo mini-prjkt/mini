@@ -28,6 +28,7 @@ function AddPost() {
   };
 
   useEffect(() => {
+    axios.defaults.withCredentials = true;
     axios.get('http://localhost:5000/auth/verify')
       .then(res => {
         if (!res.data.status) {

@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom'
 
 function Notification() {
     const navigate = useNavigate()
-  axios.defaults.withCredentials = true;
+  
   useEffect(() => {
+    axios.defaults.withCredentials = true;
     axios.get('http://localhost:5000/auth/verify')
       .then(res => {
         if (res.data.status) {

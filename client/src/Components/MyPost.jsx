@@ -8,6 +8,7 @@ const MyPost = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    axios.defaults.withCredentials = true;
     const fetchData = async () => {
       try {
         const res = await axios.get('http://localhost:5000/auth/verify');

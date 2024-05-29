@@ -187,7 +187,7 @@ function UserProfile() {
             <ul>
               {userInfo.interests.map((interest, index) => (
                 <li key={index}>
-                  {interest.name}
+                  {interest} {/* Print interest name here */}
                   <button onClick={() => handleRemoveInterest(interest._id)}>Remove</button>
                 </li>
               ))}
@@ -203,14 +203,14 @@ function UserProfile() {
           <div>
             <h3>Predicted Interests to be confirmed:</h3>
             <ul>
-              {predictedInterests.map((interest, index
-              ) => (
+              {predictedInterests.map((interest, index) => (
                 <li key={index}>
-                  {interest.name}
+                  {interest.name} {/* Print predicted interest name here */}
                   {!interest.confirmed && (
                     <>
                       <button onClick={() => handleConfirmInterest(index)}>Confirm</button>
-                      <button onClick={() => handleDeletePredictedInterest(index)}>Delete</button>
+                      <
+                      button onClick={() => handleDeletePredictedInterest(index)}>Delete</button>
                     </>
                   )}
                 </li>

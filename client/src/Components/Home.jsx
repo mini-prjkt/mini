@@ -4,8 +4,9 @@ import { Link, useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const navigate = useNavigate()
-  axios.defaults.withCredentials = true;
+  
   const handleLogout = () => {
+    axios.defaults.withCredentials = true;
     axios.get('http://localhost:5000/auth/logout')
     .then(res => {
       if(res.data.status) {

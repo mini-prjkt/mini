@@ -146,19 +146,23 @@ const confirmInterest = async (req, res) => {
 const getUserInfo = async (req, res) => {
   const { userId } = req.body;
   try {
-    const user = await User.findById(userId).populate('interests');
+    const user = await User.findById(userId).populate('interests', 'name'); // Populate interests with names
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const { username, email, interests, country } = user;
 
-    return res.json({ username, email, interests, country });
+    // Extract interest names from populated interests
+    const interestNames = interests.map(interest => interest.name);
+
+    return res.json({ username, email, interests: interestNames, country });
   } catch (error) {
     console.error('Error fetching user info:', error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 
 const updateCountry = async (req, res) => {
@@ -231,18 +235,52 @@ const addPost = async (req, res) => {
 };
 
 const getPostsByUser = async (req, res) => {
-  const userId = req.body.userId;
-
+  const { userId } = req.body;
   try {
     const posts = await Post.find({ author: userId });
-
     return res.json({ status: true, posts });
   } catch (error) {
     console.error('Error fetching posts:', error);
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ status: false, message: 'Error fetching posts' });
   }
 };
 
 
+const searchUser = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username }).populate('interests', 'name'); // Populate interests with names
+    if (!user) {
+      return res.json({ status: false, message: "User not found" });
+    }
+    const interestNames = user.interests.map(interest => interest.name); // Extract interest names
 
-export { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest, getUserInfo, updateCountry, updateProfile, removeInterest, addPost,getPostsByUser};
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+      interests: interestNames, // Use interest names instead of IDs
+      country: user.country,
+    };
+    return res.json({ status: true, user: userInfo });
+  } catch (error) {
+    console.error('Error searching user:', error);
+    return res.status(500).json({ status: false, message: 'Error searching user' });
+  }
+};
+
+
+export { 
+  signup, 
+  login, 
+  forgotPassword, 
+  resetPassword, 
+  verifyUser, 
+  confirmInterest, 
+  getUserInfo, 
+  updateCountry, 
+  updateProfile, 
+  removeInterest, 
+  addPost,
+  getPostsByUser,
+  searchUser // Add this line for user search functionality
+};

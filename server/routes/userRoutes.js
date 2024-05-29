@@ -1,5 +1,21 @@
+// userRoutes.js
+
 import express from "express";
-import { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest, getUserInfo, updateCountry, updateProfile, removeInterest, addPost ,getPostsByUser} from "../controllers/userController.js";
+import { 
+  signup, 
+  login, 
+  forgotPassword, 
+  resetPassword, 
+  verifyUser, 
+  confirmInterest, 
+  getUserInfo, 
+  updateCountry, 
+  updateProfile, 
+  removeInterest, 
+  addPost,
+  getPostsByUser,
+  searchUser// Import the searchUser function
+} from "../controllers/userController.js";
 
 const router = express.Router();
 
@@ -19,8 +35,8 @@ router.post("/confirm-interest", confirmInterest);
 router.post("/update-country", updateCountry);
 router.post("/update-profile", updateProfile);
 router.post("/remove-interest", removeInterest);
-router.post("/add-post", verifyUser, addPost); // Add this line to handle adding posts
+router.post("/add-post", verifyUser, addPost);
 router.post("/get-posts", verifyUser, getPostsByUser);
-
+router.post("/searchUser", verifyUser,searchUser); // Add this line to handle user search
 
 export { router as UserRouter };
