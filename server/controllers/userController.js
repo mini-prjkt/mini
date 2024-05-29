@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { User } from "../models/User.js";
+import { Post } from "../models/Post.js";
 import { Interest } from "../models/Interest.js";
 
 const signup = async (req, res) => {
@@ -124,31 +125,124 @@ const verifyUser = async (req, res, next) => {
     return res.json({ status: false, message: 'Invalid token' });
   }
 };
-
 const confirmInterest = async (req, res) => {
   const { userId, interestName } = req.body;
-  console.log('Received userId:', userId); // Log the userId received from the frontend
-  console.log('Received interestName:', interestName); // Log the interestName received from the frontend
   try {
-    // Check if the interest already exists
     let interest = await Interest.findOne({ name: interestName });
 
-    // If the interest doesn't exist, create a new one
     if (!interest) {
       interest = new Interest({ name: interestName, createdBy: userId });
       await interest.save();
     }
 
-    // Update the user's interests array
     await User.findByIdAndUpdate(userId, { $addToSet: { interests: interest._id } });
 
     return res.json({ status: true, message: 'Interest confirmed', interest });
   } catch (error) {
+    console.error('Error confirming interest:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+const getUserInfo = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await User.findById(userId).populate('interests');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { username, email, interests, country } = user;
+
+    return res.json({ username, email, interests, country });
+  } catch (error) {
+    console.error('Error fetching user info:', error);
     return res.status(500).json({ message: error.message });
   }
 };
 
 
+const updateCountry = async (req, res) => {
+  const { userId, country } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(userId, { country }, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.json({ status: true, message: "Country updated", country: user.country });
+  } catch (error) {
+    console.error('Error updating country:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};const updateProfile = async (req, res) => {
+  const { userId, username, email } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { username, email },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.json({ status: true, message: "Profile updated", user });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
 
+const removeInterest = async (req, res) => {
+  const { userId, interestId } = req.body;
+  try {
+    await User.findByIdAndUpdate(userId, { $pull: { interests: interestId } });
+    return res.json({ status: true, message: 'Interest removed' });
+  } catch (error) {
+    console.error('Error removing interest:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
 
-export { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest };
+const addPost = async (req, res) => {
+  const { title, content, url, tag } = req.body; // Include 'tag' in the destructuring
+  const userId = req.userId;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const newPost = new Post({
+      title,
+      content,
+      url,
+      tag,
+      author: userId,
+    });
+
+    await newPost.save();
+    await User.findByIdAndUpdate(userId, { $push: { posts: newPost._id } });
+
+    return res.json({ status: true, message: "Post added successfully", post: newPost });
+  } catch (error) {
+    console.error('Error adding post:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getPostsByUser = async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    const posts = await Post.find({ author: userId });
+
+    return res.json({ status: true, posts });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Export other controller functions...
+
+export { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest, getUserInfo, updateCountry, updateProfile, removeInterest, addPost,getPostsByUser};

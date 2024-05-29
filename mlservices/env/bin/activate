@@ -39,10 +39,10 @@ deactivate nondestructive
 if [ "${OSTYPE:-}" = "cygwin" ] || [ "${OSTYPE:-}" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "/hdd/git /mini/mlservices/env")
+    export VIRTUAL_ENV=$(cygpath "/home/nir/Downloads/mini-2da2430830809817503dac66c86c4808880e9205/mlservices/env")
 else
     # use the path as-is
-    export VIRTUAL_ENV="/hdd/git /mini/mlservices/env"
+    export VIRTUAL_ENV="/home/nir/Downloads/mini-2da2430830809817503dac66c86c4808880e9205/mlservices/env"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"

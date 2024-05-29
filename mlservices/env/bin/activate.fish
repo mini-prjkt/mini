@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/hdd/git /mini/mlservices/env"
+set -gx VIRTUAL_ENV "/home/nir/Downloads/mini-2da2430830809817503dac66c86c4808880e9205/mlservices/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

@@ -13,10 +13,11 @@ function Header() {
             <div className='header-home'><Link className='home' to="/" >Connections</Link></div>
             <div className='header-home'><Link className='home' to="/" >Features</Link></div>
             <div className='header-home'><Link className='home' to="/" >Chat</Link></div>
-            <Link  className='user-logo' to="/">
+            <div className='header-home'><Link className='home' to="/viewpost" >MyPost</Link></div>
+            <Link  className='user-logo' to="/addpost">
                 <img src={post} alt="User" />
             </Link>
-            <Link  className='post-logo' to="/">
+            <Link  className='post-logo' to="/profile">
                 <img src={user} alt="User" />
             </Link>
 

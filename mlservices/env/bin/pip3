@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/hdd/git /mini/mlservices/env/bin/python3" "$0" "$@"
-' '''
+#!/home/nir/Downloads/mini-2da2430830809817503dac66c86c4808880e9205/mlservices/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
