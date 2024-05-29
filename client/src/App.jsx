@@ -11,6 +11,7 @@ import LandingPage from './Components/LandingPage'
 import UserProfile from './Components/UserProfile'
 import AddPost from './Components/AddPost'
 import MyPost from './Components/MyPost'
+import Notification from './Components/Notification'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/profile" element={<UserProfile/>}></Route>
         <Route path="/addpost" element={<AddPost/>}></Route>
         <Route path="/viewpost" element={<MyPost/>}></Route>
+        <Route path="/notification" element={<Notification/>}></Route>
       </Routes>
     </BrowserRouter>
   )

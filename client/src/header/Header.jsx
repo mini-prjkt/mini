@@ -14,6 +14,7 @@ function Header() {
             <div className='header-home'><Link className='home' to="/" >Features</Link></div>
             <div className='header-home'><Link className='home' to="/" >Chat</Link></div>
             <div className='header-home'><Link className='home' to="/viewpost" >MyPost</Link></div>
+            <div className='header-home'><Link className='home' to="/notifications" >Notification</Link></div>
             <Link  className='user-logo' to="/addpost">
                 <img src={post} alt="User" />
             </Link>

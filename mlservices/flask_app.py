@@ -13,7 +13,12 @@ languages = [
     "french",
     "spanish",
     "german",
-    "italian"
+    "italian",
+    "Kannada",
+    "Telugu",
+    "Tamil",
+    "Malayalam",
+    "Hindi"
 ]
 
 # Tokenize the languages

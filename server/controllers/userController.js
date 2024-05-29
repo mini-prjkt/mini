@@ -243,6 +243,6 @@ const getPostsByUser = async (req, res) => {
   }
 };
 
-// Export other controller functions...
+
 
 export { signup, login, forgotPassword, resetPassword, verifyUser, confirmInterest, getUserInfo, updateCountry, updateProfile, removeInterest, addPost,getPostsByUser};
