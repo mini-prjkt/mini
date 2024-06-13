@@ -1,31 +1,68 @@
 import { User } from "../models/User.js";
 import { Message } from "../models/Message.js";
+import { Interactions } from "../models/Interactions.js";
 
-const createMessage = async (req, res) => {
+const getInteractions = async (req, res) => {
   try {
-    const fromUser = await User.findOne({ username: req.username });
-    const toUser = await User.findOne({ username: req.body.to });
-    const body = req.body.body;
+    // Find interactions for the user
+    const interactions = await Interactions.findOne({ user: req.userId });
 
-    if (!fromUser || !toUser) {
-      res.status(404).json("message:no such user");
+    if (!interactions) {
+      return res.status(404).json({ message: 'No interactions found for the user' });
     }
 
-    const fromUserid = fromUser._id;
-    const toUserid = toUser._id;
+    // Array to store results
+    const results = [];
 
-    await Message.create({
-      from: fromUserid,
-      to: toUserid,
-      body: body,
+    // Iterate over each participant in interactions.participants
+    for (const participantId of interactions.participants) {
+      // Query for the latest message between req.userId and participantId
+      const latestMessage = await Message.findOne({
+        $or: [
+          { from: req.userId, to: participantId },
+          { from: participantId, to: req.userId }
+        ]
+      })
+      .sort({ createdAt: -1 }) // Sort by createdAt descending to get the latest message
+      .exec();
+
+      // Get the username of the participant
+      const participant = await User.findById(participantId).select('username');
+
+      if (!participant) {
+        continue;
+      }
+
+      const participantObj = {
+        username: participant.username,
+      };
+
+      if (latestMessage) {
+        participantObj.lastMessage = latestMessage.body;
+        participantObj.lastMessageTime = latestMessage.createdAt; // Store the message timestamp
+      } else {
+        participantObj.lastMessage = null;
+        participantObj.lastMessageTime = null;
+      }
+      
+      results.push(participantObj);
+    }
+
+    // Sort results based on lastMessageTime in descending order
+    results.sort((a, b) => {
+      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+      if (!a.lastMessageTime) return 1;
+      if (!b.lastMessageTime) return -1;
+      return b.lastMessageTime - a.lastMessageTime;
     });
 
-    res.status(201).json("message:message sent");
+    res.status(200).json(results);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ Message: "interal server error" });
+    console.error('Error fetching interactions:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 const readMessage = async (req, res) => {
   try {
@@ -87,29 +124,4 @@ const readMessage = async (req, res) => {
   }
 };
 
-const deleteMessage = async (req, res) => {
-  try {
-    const messageId = req.body.messageId;
-    const userId = req.userId;
-
-    const message = await Message.findById(messageId);
-
-    if (!message) {
-      return res.status(404).json({ error: "Message not found" });
-    }
-
-    if (message.from.toString() !== userId.toString() && message.to.toString() !== userId.toString()) {
-        return res.status(403).json({ message: 'Message does not belong to the user' });
-      }
-
-    await message.deleteOne();
-    res
-      .status(200)
-      .json({ message: "Message deleted successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export { createMessage, readMessage, deleteMessage };
+export { readMessage,getInteractions };
