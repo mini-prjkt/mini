@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { Message } from '../models/Message.js';
 import { User } from '../models/User.js';
 import { Interactions } from '../models/Interactions.js';
-
+import cookieParser from 'cookie-parser';
 const JWT_SECRET = 'jwttokenkey';
 
 const socketUserMap = new Map();
@@ -20,14 +20,8 @@ const socket = (socketServer) => {
   });
 
   io.use((socket, next) => {
-    console.log('Connection attempt:', socket.handshake.headers);
-    const authHeader = socket.handshake.headers['authorization'];
-    if (!authHeader) {
-      console.log('No authorization header provided');
-      return next(new Error('Authentication error'));
-    }
-
-    const token = authHeader.split(' ')[1];
+    const cookieHeader = socket.handshake.headers['cookie'];
+    const token = cookieHeader.split('=')[1];
     if (!token) {
       console.log('No token provided');
       return next(new Error('Authentication error'));

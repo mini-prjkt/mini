@@ -12,26 +12,24 @@ function Chat(){
 
   useEffect(() => {
     axios.defaults.withCredentials = true;
-
-    // Retrieve token from cookie
-    const tokenFromCookie = cookies.get('token');
-    if (tokenFromCookie) {
-      setToken(tokenFromCookie);
-      fetchInteractions(tokenFromCookie); // Fetch interactions with the token
-    } else {
-      // If token is not found in cookie, redirect to login
-      navigate('/');
-    }
-  }, [navigate]);
-
-  const fetchInteractions = async (token) => {
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
+    axios.get('http://localhost:5000/auth/verify')
+      .then(res => {
+        if (!res.data.status) {
+          navigate('/');
         }
-      };
-      const response = await axios.get('http://localhost:5000/chat/interactions', config);
+        else{
+          fetchInteractions();
+        }
+      })
+      .catch(error => {
+        console.error('Error verifying user:', error);
+      });
+  }, []);
+
+  const fetchInteractions = async () => {
+      axios.defaults.withCredentials = true;
+      try{
+      const response = await axios.get('http://localhost:5000/chat/interactions');
       setInteractions(response.data); // Set interactions state with data from API
     } catch (error) {
       console.error('Error fetching interactions:', error);
@@ -45,8 +43,7 @@ function Chat(){
         {/* Display interactions */}
         {interactions.map((interaction, index) => (
           <div key={index}>
-            <p>Username: {interaction.username}</p>
-            <p>Last Message: {interaction.lastMessage}</p>
+            <p>Username: {interaction.username} , Last Message: {interaction.lastMessage}</p>
           </div>
         ))}
       </div>
