@@ -27,21 +27,24 @@ function Chat() {
       .catch(error => {
         console.error('Error verifying user:', error);
       });
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-
     const newSocket = io('http://localhost:8080', {
       withCredentials: true,
     });
+    setSocket(newSocket);
+
     newSocket.on('message', (message) => {
-      setOlderMessages((prevMessages) => [...prevMessages, message]);
+      if (selectedInteraction && message.from.username === selectedInteraction.username) {
+        setOlderMessages((prevMessages) => [...prevMessages, message]);
+      }
     });
 
     return () => {
       newSocket.close();
     };
-  }, []);
+  }, [selectedInteraction]);
 
   const fetchInteractions = async () => {
     axios.defaults.withCredentials = true;
@@ -88,6 +91,7 @@ function Chat() {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setOlderMessages([]);
+    setSelectedInteraction(null); // Clear selected interaction when popup is closed
   };
 
   const handleClickOutside = (event) => {
@@ -115,7 +119,7 @@ function Chat() {
         {/* Display interactions */}
         {interactions.map((interaction, index) => (
           <div key={index} onClick={() => handleInteractionClick(interaction)}>
-            <p>Username: {interaction.username} , Last Message: {interaction.lastMessage}</p>
+            <p>Username: {interaction.username}, Last Message: {interaction.lastMessage}</p>
           </div>
         ))}
       </div>
