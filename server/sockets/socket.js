@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import { Message } from '../models/Message.js';
 import { User } from '../models/User.js';
 import { Interactions } from '../models/Interactions.js';
-import cookieParser from 'cookie-parser';
 const JWT_SECRET = 'jwttokenkey';
 
 const socketUserMap = new Map();
@@ -13,7 +12,7 @@ const activeUsers = new Set();
 const socket = (socketServer) => {
   const io = new Server(socketServer,{
     cors: {
-      origin: "*",
+      origin: ["http://localhost:3000","http://localhost.localdomain:3000"],
       methods: ["GET", "POST"],
       credentials: true
     }
