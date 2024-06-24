@@ -62,9 +62,23 @@ function Connections() {
           <p>Email: {userInfo.email}</p>
           <p>Interests: {userInfo.interests.join(', ')}</p>
           <p>Country: {userInfo.country}</p>
+          <h2>User Posts</h2>
+          {userPosts.length > 0 ? (
+            <ul>
+              {userPosts.map(post => (
+                <li key={post._id}>
+                  <h3>{post.title}</h3>
+                  <p>{post.content}</p>
+                  <p>URL: <a href={post.url} target="_blank" rel="noopener noreferrer">{post.url}</a></p>
+                  <p>Tag: {post.tag}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No posts found</p>
+          )}
         </div>
       )}
-   
     </div>
   );
 }

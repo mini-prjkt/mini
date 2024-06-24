@@ -14,6 +14,7 @@ import {
   removeInterest, 
   addPost,
   getPostsByUser,
+  
   searchUser// Import the searchUser function
 } from "../controllers/userController.js";
 

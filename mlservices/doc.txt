@@ -1,0 +1,10 @@
+Differences Between Running Flask Code Directly and Dockerizing:
+Environment Consistency: Docker ensures that your application runs consistently across different environments (development, testing, production) without worrying about system dependencies or configuration differences.
+
+Isolation: Docker containers provide process isolation, meaning your Flask application and its dependencies are encapsulated within a container, separate from the host system and other containers.
+
+Dependency Management: Docker allows you to specify and manage dependencies (like Python packages) in a controlled environment (the Docker image), ensuring reproducibility and easier deployment.
+
+Portability: Dockerized applications are portable and can be easily deployed on any system that supports Docker, without manual setup of dependencies.
+
+Scalability: Docker makes it easier to scale your application horizontally (running multiple instances of the container) and vertically (allocating more resources to the container).

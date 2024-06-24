@@ -9,7 +9,7 @@ COPY requirements.txt .
 
 # Install any dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir Flask tensorflow numpy flask-cors
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code to the working directory
 COPY . .
@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 7860
 
 # Command to run the application
-CMD ["python", "flask_app.py"]
+CMD ["python", "app.py"]

@@ -177,7 +177,7 @@ const updateCountry = async (req, res) => {
     console.error('Error updating country:', error);
     return res.status(500).json({ message: error.message });
   }
-};const updateProfile = async (req, res) => {
+}; const updateProfile = async (req, res) => {
   const { userId, username, email } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -249,17 +249,20 @@ const getPostsByUser = async (req, res) => {
 const searchUser = async (req, res) => {
   const { username } = req.body;
   try {
-    const user = await User.findOne({ username }).populate('interests', 'name'); // Populate interests with names
+    const user = await User.findOne({ username }).populate('interests', 'name').populate('posts'); // Populate interests with names and posts
     if (!user) {
       return res.json({ status: false, message: "User not found" });
     }
+
     const interestNames = user.interests.map(interest => interest.name); // Extract interest names
+    const userPosts = user.posts; // Extract user posts
 
     const userInfo = {
       username: user.username,
       email: user.email,
       interests: interestNames, // Use interest names instead of IDs
       country: user.country,
+      posts: userPosts, // Include posts in the userInfo
     };
     return res.json({ status: true, user: userInfo });
   } catch (error) {
@@ -269,17 +272,18 @@ const searchUser = async (req, res) => {
 };
 
 
-export { 
-  signup, 
-  login, 
-  forgotPassword, 
-  resetPassword, 
-  verifyUser, 
-  confirmInterest, 
-  getUserInfo, 
-  updateCountry, 
-  updateProfile, 
-  removeInterest, 
+
+export {
+  signup,
+  login,
+  forgotPassword,
+  resetPassword,
+  verifyUser,
+  confirmInterest,
+  getUserInfo,
+  updateCountry,
+  updateProfile,
+  removeInterest,
   addPost,
   getPostsByUser,
   searchUser // Add this line for user search functionality
