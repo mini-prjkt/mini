@@ -13,6 +13,7 @@ import AddPost from './Components/AddPost'
 import MyPost from './Components/MyPost'
 import Notification from './Components/Notification'
 import Connections from './Components/Connections'
+import Chat from './Components/Chat'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/viewpost" element={<MyPost/>}></Route>
         <Route path="/notification" element={<Notification/>}></Route>
         <Route path="/connections" element={<Connections/>}></Route>
+        <Route path='/chat' element={<Chat/>}></Route>
       </Routes>
     </BrowserRouter>
   )

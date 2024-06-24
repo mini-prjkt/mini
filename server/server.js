@@ -13,11 +13,12 @@ const app = express()
 const socketServer = http.createServer(app);
 app.use(express.json())
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000","http://localhost.localdomain:3000"],
     credentials: true
 }))
 app.use(cookieParser())
 app.use('/auth', UserRouter)
+app.use('/chat',MessageRouter);
 
 mongoose.connect('mongodb://localhost:27017/authentication')
 socket(socketServer)

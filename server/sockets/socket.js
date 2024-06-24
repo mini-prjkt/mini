@@ -1,87 +1,120 @@
+// Enhanced server-side logging
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { Message } from '../models/Message.js'; 
-import { User } from '../models/User.js'; 
-
+import { Message } from '../models/Message.js';
+import { User } from '../models/User.js';
+import { Interactions } from '../models/Interactions.js';
 const JWT_SECRET = 'jwttokenkey';
 
-const socketUserMap = new Map(); 
-const activeUsers = new Set(); 
+const socketUserMap = new Map();
+const activeUsers = new Set();
 
-const socket = async(socketServer)=>{
-    const io = new Server(socketServer);
+const socket = (socketServer) => {
+  const io = new Server(socketServer,{
+    cors: {
+      origin: ["http://localhost:3000","http://localhost.localdomain:3000"],
+      methods: ["GET", "POST"],
+      credentials: true
+    }
+  });
 
-    io.use((socket, next) => {
-        const authHeader = socket.handshake.headers['authorization'];
-        
-        if (!authHeader) {
-            console.log('No authorization header provided');
-            return next(new Error('Authentication error'));
-        }
+  io.use((socket, next) => {
+    const cookieHeader = socket.handshake.headers['cookie'];
+    const token = cookieHeader.split('=')[1];
+    if (!token) {
+      console.log('No token provided');
+      return next(new Error('Authentication error'));
+    }
 
-        const token = authHeader.split(' ')[1];
-        
-        if (!token) {
-            console.log('No token provided');
-            return next(new Error('Authentication error'));
-        }
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.log('Invalid token:', err.message);
+        return next(new Error('Authentication error'));
+      }
+      socket.userId = decoded.userId;
+      socketUserMap.set(socket.userId, socket.id);
+      activeUsers.add(socket.userId);
+      console.log('User authenticated:', socket.userId);
+      next();
+    });
+  });
 
-        jwt.verify(token, JWT_SECRET, (err, decoded) => {
-            if (err) {
-                console.log('Invalid token:', err.message);
-                return next(new Error('Authentication error'));
-            }
-            socket.userId = decoded.userId; 
-            socketUserMap.set(socket.userId, socket.id); // Bind socket ID and user ID
-            activeUsers.add(socket.userId);
-            next();
-        });
+  io.on('connection', async (socket) => {
+    console.log('A user connected with session ID:', socket.id);
+    console.log('User ID from token:', socket.userId);
+
+    const socketUser = await User.findById(socket.userId);
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected with session ID:', socket.id);
+      const userId = socket.userId;
+      socketUserMap.delete(userId);
+      activeUsers.delete(userId);
+      console.log('Active users:', activeUsers.size);
     });
 
-    io.on('connection', (socket) => {
-        console.log('A user connected with session ID:', socket.id);
-        console.log('User ID from token:', socket.userId);
+    socket.on('message', async (data) => {
+      try {
+        const { to, body } = data;
+        console.log('Message received:', { from: socket.userId, to, body });
 
-        socket.on('disconnect', () => {
-            console.log('User disconnected with session ID:', socket.id);
-            const userId = socketUserMap.get(socket.id);
-            socketUserMap.delete(socket.id);
-            activeUsers.delete(userId); 
-            console.log('Active users:', activeUsers.size); 
+        const recipientUser = await User.findOne({ username: to });
+        if (!recipientUser) {
+          console.error('Recipient user not found');
+          return;
+        }
+
+        const newMessage = await Message.create({
+          from: socket.userId,
+          to: recipientUser._id,
+          body:body
         });
 
-        socket.on('message', async (data) => {
-            try {
-                const { to ,body } = data;
+        let interaction = await Interactions.findOne({user:socket.userId});
 
-                
-                const recipientUser = await User.findOne({ username: to });
-                
-                if (!recipientUser) {
-                    console.error('Recipient user not found');
-                    return;
-                }
+        if(!interaction){
+          await Interactions.create({
+            user:socket.userId,
+            participants:[recipientUser._id]
+          })
+        }
+        else {
+          // If interaction exists, check if recipientUser._id is already in participants array
+          if (!interaction.participants.includes(recipientUser._id)) {
+            // If recipientUser._id is not already in participants array, push it
+            interaction.participants.push(recipientUser._id);
+            await interaction.save();
+          }
+        }
 
-                const newMessage = await Message.create({
-                    from: socket.userId,
-                    to: recipientUser._id, 
-                    body
-                });
+        interaction = await Interactions.findOne({user:recipientUser._id});
 
-                for (const [userId, socketId] of socketUserMap.entries()) {
-                    if (userId.toString() === recipientUser._id.toString()) {
-                        console.log(userId);
-                        io.to(socketId).emit('message', { from: socket.userId, body, to: recipientUser.username });
-                        console.log("emit done")
-                        break; // Exit the loop once the recipient is found and the message is sent
-                    }
-                }
+        if(!interaction){
+          await Interactions.create({
+            user:recipientUser._id,
+            participants:[recipientUser._id]
+          })
+        }
+        else {
+          if (!interaction.participants.includes(socket.userId)) {
+            interaction.participants.push(socket.userId);
+            await interaction.save();
+          }
+        }
 
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
-        });
+        const recipientSocketId = socketUserMap.get(recipientUser._id.toString());
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit('message', { id:newMessage._id ,from: socketUser.username, body, to: recipientUser.username });
+          console.log('Message sent to recipient');
+        } else {
+          console.log('Recipient not connected');
+        }
+
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     });
-}
+  });
+};
 
-export {socket}
+export { socket };
