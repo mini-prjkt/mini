@@ -11,6 +11,8 @@ function Chat() {
   const [olderMessages, setOlderMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [newChatUsername, setNewChatUsername] = useState('');
   const [socket, setSocket] = useState(null);
   const popupRef = useRef(null);
 
@@ -112,6 +114,27 @@ function Chat() {
     };
   }, [isPopupOpen]);
 
+  const handleNewChatClick = () => {
+    setIsNewChatOpen(true);
+  };
+
+  const handleNewChatSubmit = async (e) => {
+    e.preventDefault();
+    if (newChatUsername.trim()) {
+      const interaction = { username: newChatUsername };
+      setSelectedInteraction(interaction);
+      setIsPopupOpen(true);
+      setIsNewChatOpen(false);
+      const messages = await fetchOlderMessages(newChatUsername);
+      setOlderMessages(messages);
+    }
+  };
+
+  const handleNewChatCancel = () => {
+    setIsNewChatOpen(false);
+    setNewChatUsername('');
+  };
+
   return (
     <div>
       <h1>Chat</h1>
@@ -123,6 +146,7 @@ function Chat() {
           </div>
         ))}
       </div>
+      <button onClick={handleNewChatClick}>+ New Chat</button>
 
       {isPopupOpen && (
         <div className="popup">
@@ -143,6 +167,24 @@ function Chat() {
               />
               <button onClick={handleSendMessage}>Send</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isNewChatOpen && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Start a New Chat</h2>
+            <form onSubmit={handleNewChatSubmit}>
+              <input
+                type="text"
+                value={newChatUsername}
+                onChange={(e) => setNewChatUsername(e.target.value)}
+                placeholder="Enter username"
+              />
+              <button type="submit">Start Chat</button>
+              <button type="button" onClick={handleNewChatCancel}>Cancel</button>
+            </form>
           </div>
         </div>
       )}
