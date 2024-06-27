@@ -38,9 +38,10 @@ function Chat() {
     setSocket(newSocket);
 
     newSocket.on('message', (message) => {
-      if (selectedInteraction && message.from.username === selectedInteraction.username) {
+      if (selectedInteraction && message.from === selectedInteraction.username) {
         setOlderMessages((prevMessages) => [...prevMessages, message]);
       }
+      fetchInteractions(); // Fetch interactions whenever a new message arrives
     });
 
     return () => {
@@ -91,6 +92,7 @@ function Chat() {
   };
 
   const handleClosePopup = () => {
+     fetchInteractions()
     setIsPopupOpen(false);
     setOlderMessages([]);
     setSelectedInteraction(null); // Clear selected interaction when popup is closed

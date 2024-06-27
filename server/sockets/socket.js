@@ -38,6 +38,7 @@ const socket = (socketServer) => {
 
   io.on('connection', async (socket) => {
     const socketUser = await User.findById(socket.userId);
+    
 
     socket.on('disconnect', () => {
       const userId = socket.userId;
