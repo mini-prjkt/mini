@@ -51,9 +51,11 @@ const socket = (socketServer) => {
 
         const recipientUser = await User.findOne({ username: to });
         if (!recipientUser) {
+          console.error('Recipient user not found');
           return;
         }
 
+        // Create new message
         const newMessage = await Message.create({
           from: socket.userId,
           to: recipientUser._id,
@@ -63,30 +65,31 @@ const socket = (socketServer) => {
         // Update interactions for sender
         let senderInteraction = await Interactions.findOne({ user: socket.userId });
         if (!senderInteraction) {
-          senderInteraction = new Interactions({
+          senderInteraction = await Interactions.create({
             user: socket.userId,
             participants: [recipientUser._id]
           });
         } else {
           if (!senderInteraction.participants.includes(recipientUser._id)) {
             senderInteraction.participants.push(recipientUser._id);
+            await senderInteraction.save();
+
           }
         }
-        await senderInteraction.save();
 
-        // Update interactions for recipient
         let recipientInteraction = await Interactions.findOne({ user: recipientUser._id });
         if (!recipientInteraction) {
-          recipientInteraction = new Interactions({
+          recipientInteraction = await Interactions.create({
             user: recipientUser._id,
             participants: [socket.userId]
           });
         } else {
           if (!recipientInteraction.participants.includes(socket.userId)) {
             recipientInteraction.participants.push(socket.userId);
+            await recipientInteraction.save();
           }
         }
-        await recipientInteraction.save();
+        
 
         const recipientSocketId = socketUserMap.get(recipientUser._id.toString());
         if (recipientSocketId) {
@@ -94,7 +97,7 @@ const socket = (socketServer) => {
         }
 
       } catch (error) {
-        console.log(error)
+        console.error('Error sending message:', error);
       }
     });
   });

@@ -1,16 +1,12 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-// Define schema for Conversation
+// Define schema for Interactions
 const interactionsSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" }, // Foreign key reference to User model
-  participants: [
-    {
-      user: { type: Schema.Types.ObjectId, ref: "User" }
-    }
-  ]
+  participants: [{ type: Schema.Types.ObjectId, ref: "User" }] // Array of ObjectId references to User model
 });
 
-const Interactions = mongoose.model("Conversation", interactionsSchema);
+const Interactions = mongoose.model("Interactions", interactionsSchema);
 
-export {Interactions};
+export { Interactions };
