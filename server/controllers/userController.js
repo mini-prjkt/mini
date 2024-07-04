@@ -245,8 +245,7 @@ const getPostsByUser = async (req, res) => {
   }
 };
 
-
-const searchUser = async (req, res) => {
+const searchUsers = async (req, res) => {
   const { username } = req.body;
   try {
     const user = await User.findOne({ username }).populate('interests', 'name').populate('posts'); // Populate interests with names and posts
@@ -271,7 +270,63 @@ const searchUser = async (req, res) => {
   }
 };
 
+const searchUser = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username })
+      .populate('interests', 'name')
+      .populate('posts'); // Ensure posts are populated
 
+    if (!user) {
+      return res.json({ status: false, message: "User not found" });
+    }
+
+    const interestNames = user.interests.map(interest => interest.name); // Extract interest names
+
+    // Fetch posts that match user interests
+    const relevantPosts = await Post.find({ tag: { $in: interestNames } }).populate('author', 'username');
+
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+      interests: interestNames,
+      country: user.country,
+      posts: relevantPosts, // Include relevant posts
+    };
+
+    return res.json({ status: true, user: userInfo });
+  } catch (error) {
+    console.error('Error searching user:', error);
+    return res.status(500).json({ status: false, message: 'Error searching user' });
+  }
+};
+
+
+const getRelevantPosts = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId).populate('interests', 'name');
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const interests = user.interests.map(interest => interest.name);
+    const posts = await Post.find({
+      $or: [
+        { title: { $in: interests } },
+        { url: { $in: interests } },
+        { tag: { $in: interests } },
+        { content: { $in: interests } }
+      ]
+    }).populate('author', 'username email'); // Populate author with username and email
+
+    return res.json({ status: true, posts });
+  } catch (error) {
+    console.error('Error fetching relevant posts:', error);
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 export {
   signup,
@@ -286,5 +341,7 @@ export {
   removeInterest,
   addPost,
   getPostsByUser,
+  getRelevantPosts,
+  searchUsers,
   searchUser // Add this line for user search functionality
 };

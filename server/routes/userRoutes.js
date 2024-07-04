@@ -14,6 +14,8 @@ import {
   removeInterest, 
   addPost,
   getPostsByUser,
+  getRelevantPosts,
+  searchUsers,
   
   searchUser// Import the searchUser function
 } from "../controllers/userController.js";
@@ -38,6 +40,8 @@ router.post("/update-profile", updateProfile);
 router.post("/remove-interest", removeInterest);
 router.post("/add-post", verifyUser, addPost);
 router.post("/get-posts", verifyUser, getPostsByUser);
-router.post("/searchUser", verifyUser,searchUser); // Add this line to handle user search
+router.get("/relevant-posts", verifyUser, getRelevantPosts);
 
+router.post("/searchUser", verifyUser,searchUser); // Add this line to handle user search
+router.post("/searchUserss",verifyUser,searchUsers);
 export { router as UserRouter };

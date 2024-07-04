@@ -26,7 +26,7 @@ function Connections() {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/auth/searchUser', { username });
+      const res = await axios.post('http://localhost:5000/auth/searchUserss', { username });
       if (res.data.status) {
         setUserInfo(res.data.user);
         setUserPosts(res.data.user.posts); // Assuming the backend sends user posts along with user details
