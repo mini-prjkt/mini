@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../css/viewposts.css'
+import '../css/viewposts.css'; // Assuming this is the path to your CSS file
+import Header from '../header/Header';
+
 const MyPost = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState('');
@@ -38,20 +40,22 @@ const MyPost = () => {
   }, [navigate]);
 
   return (
-
-    <div >
-      <h1>My Posts</h1>
-      <div className="posts-container">
-        {posts.map(post => (
-          <div className="post" key={post._id}>
-            <div className="post-details">
-              <h2>{post.title}</h2>
-              <p>{post.content}</p>
-              <p>Tag: {post.tag}</p>
+    <div className='post-dov'>
+      <Header />
+      <div className="container">
+        <h1>My Posts</h1>
+        <div className="posts-container">
+          {posts.map(post => (
+            <div className="post" key={post._id}>
+              <div className="post-details">
+                <h2>{post.title}</h2>
+                <p>{post.content}</p>
+                <p>Tag: {post.tag}</p>
+              </div>
+              <a href={post.url} target="_blank" rel="noopener noreferrer">Link</a>
             </div>
-            <a href={post.url} target="_blank" rel="noopener noreferrer">Take me there baby</a>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

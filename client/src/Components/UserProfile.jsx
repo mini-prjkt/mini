@@ -138,77 +138,80 @@ function UserProfile() {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="loading">Loading...</p>;
   }
 
   if (!verified) {
-    return <p>Verification failed. Redirecting...</p>;
+    return <p className="verification-failed">Verification failed. Redirecting...</p>;
   }
 
   return (
-    <div>
-      <Header /> 
-      <div className="UserProfile">
-        <h1>User Profile</h1>
+    <div className='prof-div'>
+      <Header />
+      <div className="user-profile">
+        <h1 className="user-profile__title">User Profile</h1>
         {userInfo ? (
-          <div>
-            <div>
+          <div className="user-profile__info">
+            <div className="user-profile__field">
               <label htmlFor="username">Username:</label>
               <input
                 type="text"
                 id="username"
+                className="user-profile__input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-            <div>
+            <div className="user-profile__field">
               <label htmlFor="email">Email:</label>
               <input
                 type="email"
                 id="email"
+                className="user-profile__input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled // Disable editing for email
               />
             </div>
-            <div>
+            <div className="user-profile__field">
               <label htmlFor="country">Select a country:</label>
-              <select id="country" value={selectedCountry} onChange={handleCountryChange}>
+              <select id="country" className="user-profile__select" value={selectedCountry} onChange={handleCountryChange}>
                 <option value="">Select a country</option>
                 {countries.map((country, index) => (
                   <option key={index} value={country}>{country}</option>
                 ))}
               </select>
             </div>
-            <button onClick={handleUpdateProfile}>Update Profile</button>
-            <div>
+            <button className="user-profile__button" onClick={handleUpdateProfile}>Update Profile</button>
+            <div className="user-profile__interests">
               <h3>Interests</h3>
-              <ul>
+              <ul className="user-profile__interest-list">
                 {userInfo.interests.map((interest, index) => (
-                  <li key={index}>
+                  <li key={index} className="user-profile__interest-item">
                     {interest} {/* Print interest name here */}
-                    <button onClick={() => handleRemoveInterest(interest._id)}>Remove</button>
+                    <button className="user-profile__interest-remove" onClick={() => handleRemoveInterest(interest._id)}>Remove</button>
                   </li>
                 ))}
               </ul>
               <input
                 type="text"
+                className="user-profile__interest-input"
                 value={newInterest}
                 onChange={(e) => setNewInterest(e.target.value)}
                 placeholder="Add new interest"
               />
-              <button onClick={handlePredictInterest}>Add Interest</button>
+              <button className="user-profile__interest-add" onClick={handlePredictInterest}>Add Interest</button>
             </div>
-            <div>
+            <div className="user-profile__predicted-interests">
               <h3>Predicted Interests to be confirmed:</h3>
-              <ul>
+              <ul className="user-profile__predicted-interest-list">
                 {predictedInterests.map((interest, index) => (
-                  <li key={index}>
+                  <li key={index} className="user-profile__predicted-interest-item">
                     {interest.name} {/* Print predicted interest name here */}
                     {!interest.confirmed && (
                       <>
-                        <button onClick={() => handleConfirmInterest(index)}>Confirm</button>
-                        <button onClick={() => handleDeletePredictedInterest(index)}>Delete</button>
+                        <button className="user-profile__predicted-interest-confirm" onClick={() => handleConfirmInterest(index)}>Confirm</button>
+                        <button className="user-profile__predicted-interest-delete" onClick={() => handleDeletePredictedInterest(index)}>Delete</button>
                       </>
                     )}
                   </li>
@@ -217,7 +220,7 @@ function UserProfile() {
             </div>
           </div>
         ) : (
-          <p>Error fetching user info</p>
+          <p className="user-profile__error">Error fetching user info</p>
         )}
       </div>
     </div>

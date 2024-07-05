@@ -1,0 +1,55 @@
+/* welcome.css */
+
+.outer-div {
+    padding: 0;
+    margin: 0;
+    background-color: rgb(59, 52, 134);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+.posts {
+    width: 80%;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.post {
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 10px;
+    width: 30%;
+    box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.post h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.post p {
+    margin: 10px 0;
+}
+
+.post a {
+    color: rgb(59, 52, 134);
+    text-decoration: none;
+}
+
+.post a:hover {
+    text-decoration: underline;
+}

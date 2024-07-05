@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Header from '../header/Header';
+import "../css/addpost.css"
 
 function AddPost() {
   const navigate = useNavigate();
@@ -41,7 +43,10 @@ function AddPost() {
   }, []);
 
   return (
-    <div>
+    <div className='view-divv'>
+<Header/>
+    <div className='view-div'>
+      
       <h2>Add Post</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -63,7 +68,9 @@ function AddPost() {
         <button type="submit">Submit</button>
       </form>
     </div>
+    </div>
   );
+  
 }
 
 export default AddPost;

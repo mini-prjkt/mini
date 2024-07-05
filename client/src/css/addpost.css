@@ -1,0 +1,49 @@
+.view-divv {
+    display: flex;
+    flex-direction: column;
+    background-color: #3B3486;
+    align-items: center; /* Vertically center align */
+    height: 100vh; /* Adjust height as needed */
+  }
+  
+  .view-div {
+    width: 40%; /* Adjust width as needed */
+    text-align: center; /* Center align text within view-div */
+    background-color: #f0f0f0; /* Example background color */
+    padding: 1rem;
+    margin-top: 5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Example box shadow */
+  }
+  
+  .view-div form {
+    margin-top: 20px; /* Example margin */
+  }
+  
+  .view-div h2 {
+    margin-bottom: 20px; /* Example margin */
+  }
+  
+  .view-div input,
+  .view-div textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .view-div button {
+    background-color: #007bff; /* Example button color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .view-div button:hover {
+    background-color: #0056b3; /* Example hover color */
+  }
+  

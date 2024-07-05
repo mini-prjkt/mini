@@ -1,0 +1,121 @@
+.prof-div {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(59, 52, 134);
+  }
+  
+  .user-profile {
+    padding-left: 2rem;
+    width: 90%;
+    margin-left: 2rem;
+  }
+  
+  .user-profile__title {
+    text-align: center;
+    font-size: 2.rem;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  .user-profile__info {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    margin-right: 10rem;
+  }
+  
+  .user-profile__field {
+    margin-bottom: 15px;
+    
+  }
+  
+  .user-profile__input,
+  .user-profile__select {
+    width: 10%;
+    margin-top: 5px;
+  }
+  
+  .user-profile__button {
+    width: 20%;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .user-profile__button:hover {
+    background-color: #45a049;
+  }
+  
+  .user-profile__interests,
+  .user-profile__predicted-interests {
+    margin-top: 20px;
+  }
+  
+  .user-profile__interest-list,
+  .user-profile__predicted-interest-list {
+    
+    padding-left: 0;
+    
+  }
+  
+  .user-profile__interest-item,
+  .user-profile__predicted-interest-item {
+    display: flex;
+    align-items: center;
+    
+    padding: 5px 0;
+  }
+  
+  .user-profile__interest-remove,
+  .user-profile__predicted-interest-confirm,
+  .user-profile__predicted-interest-delete {
+    /* padding: 5px 10px; */
+    margin-left: 2rem;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .user-profile__predicted-interest-confirm {
+    background-color: #4caf50;
+  }
+  
+  .user-profile__predicted-interest-confirm:hover,
+  .user-profile__interest-remove:hover,
+  .user-profile__predicted-interest-delete:hover {
+    background-color: #d32f2f;
+  }
+  
+  .user-profile__interest-input {
+    width: 20%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 10px;
+  }
+  
+  .user-profile__interest-add {
+    padding: 10px 20px;
+    background-color: #008cba;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .user-profile__interest-add:hover {
+    background-color: #007bb5;
+  }
+  
+  .loading,
+  .verification-failed,
+  .user-profile__error {
+    text-align: center;
+    color: red;
+  }
+  

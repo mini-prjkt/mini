@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Header from '../header/Header';
+import "../css/welcome.css"
 
 function WelcomePage() {
   const [posts, setPosts] = useState([]);
