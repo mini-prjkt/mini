@@ -1,5 +1,3 @@
-// WelcomePage.js
-
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
@@ -54,7 +52,11 @@ function WelcomePage() {
             <p>{post.content}</p>
             <a href={post.url}>{post.url}</a>
             <p>{post.tag}</p>
-            <p>Posted by: {post.author.username} ({post.author.email})</p>
+            {post.author ? (
+              <p>Posted by: {post.author.username} ({post.author.email})</p>
+            ) : (
+              <p>Author information not available</p>
+            )}
           </div>
         ))}
       </div>
