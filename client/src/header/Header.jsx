@@ -8,7 +8,6 @@ function Header() {
             
             <div className='header-home'><Link className='home' to="/welcome" >Home</Link></div>
             <div className='header-home'><Link className='home' to="/connections" >Connections</Link></div>
-            <div className='header-home'><Link className='home' to="/" >Features</Link></div>
             <div className='header-home'><Link className='home' to="/chat" >Chat</Link></div>
             <div className='header-home'><Link className='home' to="/viewpost" >MyPost</Link></div>
             <div className='header-home'><Link className='home' to="/addpost" >Add Post</Link></div>
