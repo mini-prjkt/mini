@@ -311,15 +311,20 @@ const getRelevantPosts = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const interests = user.interests.map(interest => interest.name);
+    const interests = user.interests.map(interest => new RegExp(interest.name, 'i'));
     const posts = await Post.find({
-      $or: [
-        { title: { $in: interests } },
-        { url: { $in: interests } },
-        { tag: { $in: interests } },
-        { content: { $in: interests } }
+      $and: [
+        {
+          $or: [
+            { title: { $in: interests } },
+            { url: { $in: interests } },
+            { tag: { $in: interests } },
+            { content: { $in: interests } }
+          ]
+        },
+        { author: { $ne: userId } } // Exclude user's own posts
       ]
-    }).populate('author', 'username email'); // Populate author with username and email
+    }).populate('author', 'username email');
 
     return res.json({ status: true, posts });
   } catch (error) {
@@ -327,6 +332,8 @@ const getRelevantPosts = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
 
 export {
   signup,

@@ -6,6 +6,8 @@ import "../css/welcome.css"
 
 function WelcomePage() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
 
@@ -30,15 +32,16 @@ function WelcomePage() {
   const fetchRelevantPosts = async () => {
     try {
       const res = await axios.get('http://localhost:5000/auth/relevant-posts');
-      console.log(res.data); // Log the entire response object
       if (res.data.status) {
         setPosts(res.data.posts);
-        console.log(res.data.posts); // Log the fetched posts for debugging
       } else {
-        console.error("Failed to fetch relevant posts");
+        setError("Failed to fetch relevant posts");
       }
     } catch (error) {
       console.error("Error fetching relevant posts:", error);
+      setError("Error fetching relevant posts");
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -46,19 +49,25 @@ function WelcomePage() {
     <div className='outer-div'>
       <Header />
       <div className='posts'>
-        {posts.map(post => (
-          <div key={post._id} className='post'>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-            <a href={post.url}>{post.url}</a>
-            <p>{post.tag}</p>
-            {post.author ? (
-              <p>Posted by: {post.author.username} ({post.author.email})</p>
-            ) : (
-              <p>Author information not available</p>
-            )}
-          </div>
-        ))}
+        {loading ? (
+          <p>Loading posts...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          posts.map(post => (
+            <div key={post._id} className='post'>
+              <h2>{post.title}</h2>
+              <p>{post.content}</p>
+              <a href={post.url}>{post.url}</a>
+              <p>{post.tag}</p>
+              {post.author ? (
+                <p>Posted by: {post.author.username} ({post.author.email})</p>
+              ) : (
+                <p>Author information not available</p>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
