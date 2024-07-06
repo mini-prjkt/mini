@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import '../css/chat.css';
-
+import Header from '../header/Header';
 function Chat() {
   const navigate = useNavigate();
   const [interactions, setInteractions] = useState([]);
@@ -92,7 +92,7 @@ function Chat() {
   };
 
   const handleClosePopup = () => {
-     fetchInteractions()
+    fetchInteractions();
     setIsPopupOpen(false);
     setOlderMessages([]);
     setSelectedInteraction(null); // Clear selected interaction when popup is closed
@@ -138,25 +138,27 @@ function Chat() {
   };
 
   return (
-    <div>
+    <div className='chat-div'>
+    <Header />
       <h1>Chat</h1>
-      <div>
+      <div className="interactions-container">
         {/* Display interactions */}
         {interactions.map((interaction, index) => (
-          <div key={index} onClick={() => handleInteractionClick(interaction)}>
-            <p>Username: {interaction.username}, Last Message: {interaction.lastMessage}</p>
+          <div key={index} className="interaction" onClick={() => handleInteractionClick(interaction)}>
+            <p>Username: {interaction.username}</p>
+            <p>Last Message: {interaction.lastMessage}</p>
           </div>
         ))}
       </div>
-      <button onClick={handleNewChatClick}>+ New Chat</button>
+      <button className="new-chat-button" onClick={handleNewChatClick}>+ New Chat</button>
 
       {isPopupOpen && (
         <div className="popup">
           <div className="popup-content" ref={popupRef}>
-            <button onClick={handleClosePopup}>Close</button>
+            <button className="close-button" onClick={handleClosePopup}>X</button>
             <h2>Chat with {selectedInteraction.username}</h2>
             <div className="message-list">
-              {olderMessages.map((message, index) => (
+              {[...olderMessages].reverse().map((message, index) => (
                 <p key={index}>{message.from.username} -&gt; {message.body}</p>
               ))}
             </div>
@@ -177,7 +179,7 @@ function Chat() {
         <div className="popup">
           <div className="popup-content">
             <h2>Start a New Chat</h2>
-            <form onSubmit={handleNewChatSubmit}>
+            <form className="new-chat-popup" onSubmit={handleNewChatSubmit}>
               <input
                 type="text"
                 value={newChatUsername}
