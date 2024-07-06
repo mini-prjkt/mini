@@ -41,7 +41,7 @@ function Interest() {
 
   const addInterest = async () => {
     try {
-      const response = await axios.post('http://localhost:7860/predict', { text: inputText });
+      const response = await axios.post('http://localhost:8002/predict', { text: inputText });
       const predictedInterest = response.data.closest_language;
       setInterests([...interests, { name: predictedInterest, confirmed: false }]);
       setInputText('');
