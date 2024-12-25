@@ -14,10 +14,12 @@ import MyPost from './Components/MyPost'
 import Notification from './Components/Notification'
 import Connections from './Components/Connections'
 import Chat from './Components/Chat'
+import useActivityTracker from './hooks/useActivitytracker';
 
 function App() {
-
-  return (
+  const { averageTypingSpeed, averageScrollSpeed } = useActivityTracker();
+  
+  return (  
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />}></Route>

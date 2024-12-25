@@ -3,8 +3,6 @@ sudo docker build -t flask-nlp-app .
 sudo docker run -p 8002:8002 flask-nlp-app
 
 
-$ curl -X POST   http://localhost:8002/predict   -H 'Content-Type: application/json'   -d '{"text": "lindi"}'
-{
-  "closest_language": "Hindi"
-}
+curl -X POST http://0.0.0.0:8002/predict -H "Content-Type: application/json" -d '{"text": "lyython"}'
+
 
