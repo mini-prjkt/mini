@@ -106,11 +106,10 @@ def predict_user_consistency_with_thresholds(
 # Example predictions
 avg_typing = 1000
 avg_scrolling = 300
-latest_typing = 940  # Significant deviation
+latest_typing = 939  # Significant deviation
 latest_scrolling = 300  # No deviation
 
 result = predict_user_consistency_with_thresholds(
     avg_typing, avg_scrolling, latest_typing, latest_scrolling
 )
 print("Prediction:", result)
-
