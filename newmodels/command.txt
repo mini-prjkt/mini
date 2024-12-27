@@ -1,0 +1,2 @@
+first run app.py
+curl -X POST -H "Content-Type: application/json" -d '{"userId": "676f03cb245f47d9337f766a"}' http://127.0.0.1:5002/predict-sameornot

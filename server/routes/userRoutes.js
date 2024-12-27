@@ -108,5 +108,34 @@ router.post('/update-average', async (req, res) => {
 });
 
 
+router.post('/update-vector', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Extract behavioral data
+    const { typingSpeeds, scrollSpeeds, typingAverage, scrollAverage } = user.behavioralData;
+
+    // Calculate the latest typing and scrolling speeds
+    const latestTypingSpeed = typingSpeeds[typingSpeeds.length - 1] || 0; // Default to 0 if no data
+    const latestScrollSpeed = scrollSpeeds[scrollSpeeds.length - 1] || 0; // Default to 0 if no data
+
+    // Update the vector field
+    user.vector = [typingAverage, scrollAverage, latestTypingSpeed, latestScrollSpeed];
+
+    // Save the updated user document
+    await user.save();
+
+    res.status(200).json({
+      message: 'Vector updated successfully',
+      vector: user.vector
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating vector', error });
+  }
+});
 
 export { router as UserRouter };
