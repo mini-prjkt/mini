@@ -43,47 +43,30 @@ router.get("/relevant-posts", verifyUser, getRelevantPosts);
 router.post("/searchUser", verifyUser, searchUser);
 router.post("/searchUserss", verifyUser, searchUsers);
 
+// Update behavioral data dynamically and recalculate averages
 router.post('/update-behavior', async (req, res) => {
-  const { userId, typingSpeeds, scrollSpeeds } = req.body;
+  const { userId, typingAverage } = req.body;
 
   try {
-      const user = await User.findById(userId);
-      if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-      // Calculate the average of the incoming data
-      const calculateAverage = (data) => {
-          if (data.length === 0) return 0;
-          const sum = data.reduce((a, b) => a + b, 0);
-          return sum / data.length;
-      };
+    // Append the new average
+    user.behavioralData.typingSpeeds.push(typingAverage);
 
-      const typingAverage = calculateAverage(typingSpeeds);
-      const scrollAverage = calculateAverage(scrollSpeeds);
+    // Ensure only 10 slices are stored
+    if (user.behavioralData.typingSpeeds.length > 10) {
+      user.behavioralData.typingSpeeds.shift(); // Remove the oldest entry
+    }
 
-      // Append the new averages to the behavioral data
-      user.behavioralData.typingSpeeds.push(typingAverage);
-      user.behavioralData.scrollSpeeds.push(scrollAverage);
-      user.behavioralData.updatedAt = new Date();
+    user.behavioralData.updatedAt = new Date();
 
-      // Check if data exceeds 50 entries
-      if (user.behavioralData.typingSpeeds.length > 50 || user.behavioralData.scrollSpeeds.length > 50) {
-          // Retain only the latest 50 averages
-          user.behavioralData.typingSpeeds = user.behavioralData.typingSpeeds.slice(-50);
-          user.behavioralData.scrollSpeeds = user.behavioralData.scrollSpeeds.slice(-50);
+    // Save the updated user data
+    await user.save();
 
-          // Set the retraining flag to true
-          user.retrainingRequired = true;
-      } else {
-          // If no deletion occurs, keep retrainingRequired as false
-          user.retrainingRequired = false;
-      }
-
-      // Save the updated user data
-      await user.save();
-
-      res.status(200).json({ message: 'Behavioral data updated successfully' });
+    res.status(200).json({ message: 'Behavioral data updated successfully' });
   } catch (error) {
-      res.status(500).json({ message: 'Error updating data', error });
+    res.status(500).json({ message: 'Error updating data', error });
   }
 });
 

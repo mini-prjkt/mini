@@ -5,13 +5,15 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     interests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Interest' }], // Array of interests associated with the user
-    country: { type: String },  
+    country: { type: String },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }], // Array of posts authored by the user
 
     // Behavioral Data
     behavioralData: {
         typingSpeeds: [{ type: Number }], // Array of typing speeds (ms/keystroke)
         scrollSpeeds: [{ type: Number }], // Array of scroll speeds (px/ms)
+        typingAverage: { type: Number, default: 0 }, // Average typing speed
+        scrollAverage: { type: Number, default: 0 }, // Average scroll speed
         updatedAt: { type: Date, default: Date.now } // Timestamp of the last behavioral update
     },
 
