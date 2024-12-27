@@ -70,7 +70,6 @@ router.post('/update-behavior', async (req, res) => {
   }
 });
 
-
 router.post('/update-average', async (req, res) => {
   const { userId } = req.body;
 
@@ -79,8 +78,12 @@ router.post('/update-average', async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     // Recalculate averages for typing and scrolling speeds
-    const typingSpeeds = user.behavioralData.typingSpeeds;
-    const scrollSpeeds = user.behavioralData.scrollSpeeds;
+    const typingSpeeds = [...user.behavioralData.typingSpeeds];
+    const scrollSpeeds = [...user.behavioralData.scrollSpeeds];
+
+    // Exclude the most recent value
+    if (typingSpeeds.length > 1) typingSpeeds.pop();
+    if (scrollSpeeds.length > 1) scrollSpeeds.pop();
 
     const calculateAverage = (data) => {
       if (!Array.isArray(data) || data.length === 0) return 0;
@@ -106,7 +109,6 @@ router.post('/update-average', async (req, res) => {
     res.status(500).json({ message: 'Error updating averages', error });
   }
 });
-
 
 router.post('/update-vector', async (req, res) => {
   const { userId } = req.body;

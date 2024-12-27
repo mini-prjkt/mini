@@ -16,8 +16,8 @@ def generate_data(samples=1000, percentage_threshold=0.2, absolute_typing_margin
 
     for _ in range(samples):
         # Generate average speeds (realistic ranges)
-        avg_typing = np.random.uniform(150, 250)  # ms/keystroke
-        avg_scrolling = np.random.uniform(250, 350)  # px/ms
+        avg_typing = np.random.uniform(0, 1600)  # ms/keystroke
+        avg_scrolling = np.random.uniform(0, 1600)  # px/ms
 
         # Generate latest speeds
         latest_typing = avg_typing + np.random.uniform(-0.5, 0.5) * avg_typing
