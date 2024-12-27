@@ -70,4 +70,43 @@ router.post('/update-behavior', async (req, res) => {
   }
 });
 
+
+router.post('/update-average', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Recalculate averages for typing and scrolling speeds
+    const typingSpeeds = user.behavioralData.typingSpeeds;
+    const scrollSpeeds = user.behavioralData.scrollSpeeds;
+
+    const calculateAverage = (data) => {
+      if (!Array.isArray(data) || data.length === 0) return 0;
+      return parseFloat((data.reduce((sum, value) => sum + value, 0) / data.length).toFixed(2));
+    };
+
+    const typingAverage = calculateAverage(typingSpeeds);
+    const scrollAverage = calculateAverage(scrollSpeeds);
+
+    // Update the user's behavioral data
+    user.behavioralData.typingAverage = typingAverage;
+    user.behavioralData.scrollAverage = scrollAverage;
+    user.behavioralData.updatedAt = new Date();
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Averages updated successfully',
+      typingAverage,
+      scrollAverage
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating averages', error });
+  }
+});
+
+
+
 export { router as UserRouter };

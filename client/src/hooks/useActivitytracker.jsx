@@ -60,9 +60,20 @@ const useActivityTracker = () => {
         if (response.status === 200) {
           console.log('Behavioral data updated successfully');
           setTypingSpeedData([]); // Clear the data after sending
+
+          // Call update-average API immediately after
+          const avgResponse = await axios.post(
+            'http://localhost:5000/auth/update-average',
+            { userId },
+            { withCredentials: true }
+          );
+
+          if (avgResponse.status === 200) {
+            console.log('Averages recalculated successfully', avgResponse.data);
+          }
         }
       } catch (error) {
-        console.error('Error updating behavioral data:', error);
+        console.error('Error updating behavioral data or averages:', error);
       }
     }
   };
