@@ -19,7 +19,10 @@ const UserSchema = new mongoose.Schema({
 
     // ML Model Tracking
     retrainingRequired: { type: Boolean, default: false }, // Indicates if user model requires retraining
-    profileScore: { type: Number, default: 0 } // A score indicating the user's behavioral profile quality
+    profileScore: { type: Number, default: 0 }, // A score indicating the user's behavioral profile quality
+
+    // Vector Embedding
+    vector: [{ type: Number }] // Array to store embeddings: [average typing, average scrolling, latest typing, latest scrolling]
 });
 
 const User = mongoose.model("User", UserSchema);
