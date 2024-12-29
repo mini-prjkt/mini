@@ -9,6 +9,7 @@ const useActivityTracker = () => {
   const [consecutiveDifferentUsers, setConsecutiveDifferentUsers] = useState(0);
   const lastTypingTime = useRef(0);
 
+  // Fetch the user ID on initial mount
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -28,6 +29,7 @@ const useActivityTracker = () => {
     fetchUserId();
   }, []);
 
+  // Logout the user
   const logoutUser = async () => {
     try {
       const res = await axios.get("http://localhost:5000/auth/logout", {
@@ -44,6 +46,7 @@ const useActivityTracker = () => {
     }
   };
 
+  // Capture typing speed on keydown
   const captureTypingSpeed = () => {
     setIsActive(true);
     const currentTime = Date.now();
@@ -56,6 +59,7 @@ const useActivityTracker = () => {
     lastTypingTime.current = currentTime;
   };
 
+  // Calculate average of data array
   const calculateAverage = (data) => {
     if (!Array.isArray(data) || data.length === 0) return 0;
     return parseFloat(
@@ -63,6 +67,7 @@ const useActivityTracker = () => {
     );
   };
 
+  // Send behavioral data and check prediction
   const sendBehavioralData = async () => {
     if (userId && typingSpeedData.length > 0) {
       const typingAverage = calculateAverage(typingSpeedData);
@@ -102,8 +107,21 @@ const useActivityTracker = () => {
               );
 
               if (predictResponse.status === 200) {
-                const { prediction } = predictResponse.data;
+                const {
+                  prediction,
+                  model_probability,
+                  typing_deviation_absolute,
+                  scrolling_deviation_absolute,
+                } = predictResponse.data;
 
+                // Log the prediction results
+                console.log("Predict API Response:", predictResponse.data);
+                console.log(`Prediction: ${prediction}, Model Probability: ${model_probability}`);
+                console.log(
+                  `Typing Deviation: ${typing_deviation_absolute}, Scrolling Deviation: ${scrolling_deviation_absolute}`
+                );
+
+                // Handle consecutive "Not Same User" predictions
                 if (prediction === "Not Same User") {
                   setConsecutiveDifferentUsers((prevCount) => {
                     const newCount = prevCount + 1;
@@ -129,6 +147,7 @@ const useActivityTracker = () => {
     }
   };
 
+  // Listen for typing activity
   useEffect(() => {
     window.addEventListener("keydown", captureTypingSpeed);
 
@@ -137,6 +156,7 @@ const useActivityTracker = () => {
     };
   }, []);
 
+  // Send data periodically if activity is detected
   useEffect(() => {
     const interval = setInterval(() => {
       if (isActive) {
