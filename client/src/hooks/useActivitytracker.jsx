@@ -54,6 +54,7 @@ const useActivityTracker = () => {
       const typingSpeed = currentTime - lastTypingTime.current;
       if (typingSpeed > 0 && typingSpeed < 2000) {
         setTypingSpeedData((prevData) => [...prevData, typingSpeed]);
+        console.log(`Latest Typing Speed: ${typingSpeed} ms/keystroke`);
       }
     }
     lastTypingTime.current = currentTime;
@@ -99,7 +100,14 @@ const useActivityTracker = () => {
             );
 
             if (vectorResponse.status === 200) {
+              const { vector } = vectorResponse.data;
               console.log("Vector updated successfully:", vectorResponse.data);
+
+              // Log latest typing and scrolling speeds
+              const latestTypingSpeed = vector[2];
+              const latestScrollingSpeed = vector[3];
+              console.log(`Latest Typing Speed: ${latestTypingSpeed} ms/keystroke`);
+              console.log(`Latest Scrolling Speed: ${latestScrollingSpeed} px/ms`);
 
               const predictResponse = await axios.post(
                 "http://localhost:5003/predict-same-or-not",

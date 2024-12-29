@@ -1,0 +1,99 @@
+.main-login {
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    display: flex; /* Enables flexbox for centering content */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    background-color: #000000; /* Light background color */
+  }
+  
+  .login-container {
+    width: 20%;
+    height: auto; /* Allow height to adjust based on content */
+    padding: 20px; /* Add padding inside the container */
+    border: 2px solid #333; /* Solid black border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #14a80c; /* White background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    display: flex; /* Flexbox for internal content alignment */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center content horizontally inside */
+  }
+  
+  .login-form {
+    width: 100%;
+  }
+  
+  .login-heading {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  
+  .login-field {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  .login-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ffffff;
+  }
+  
+  .login-input {
+    width: 90%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .login-input:focus {
+    border-color: #007bff;
+  }
+  
+  .login-button {
+    width: 90%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .login-links {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .forgot-password-link,
+  .signup-link {
+    color: #000000;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .forgot-password-link:hover,
+  .signup-link:hover {
+    text-decoration: underline;
+  }
+  
+  .signup-link-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffffff;
+  }
+  

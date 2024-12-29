@@ -1,39 +1,84 @@
+.main-signup{
+  width: 100vw; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  display: flex; /* Enables flexbox for centering content */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically */
+  background-color: #000000; /* Light background color */
+}
 .sign-up-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .sign-up-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  button[type="submit"] {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
+  width: 20%;
+  height: auto; /* Allow height to adjust based on content */
+  padding: 20px; /* Add padding inside the container */
+  border: 2px solid #333; /* Solid black border */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #14a80c; /* Green background for consistency */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex; /* Flexbox for internal content alignment */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center content horizontally inside */
+  margin: 0 auto; /* Center the container horizontally on the page */
+}
+
+.sign-up-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #ffffff; /* White text for labels */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 90%; /* Match login input width */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #000000; /* Black border for consistency */
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #007bff; /* Blue border on focus */
+}
+
+button[type="submit"] {
+  width: 90%; /* Match login button width */
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ffffff; /* White text for additional information */
+}
+
+a {
+  color: #000000; /* Black links for consistency */
+  text-decoration: none;
+  font-size: 14px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
