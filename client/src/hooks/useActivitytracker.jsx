@@ -6,7 +6,7 @@ const useActivityTracker = () => {
   const [averageTypingSpeed, setAverageTypingSpeed] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [userId, setUserId] = useState(null);
-
+  const [consecutiveDifferentUsers, setConsecutiveDifferentUsers] = useState(0); // Counter for different users
   const lastTypingTime = useRef(0);
 
   useEffect(() => {
@@ -87,11 +87,21 @@ const useActivityTracker = () => {
 
               if (predictResponse.status === 200) {
                 console.log('Prediction result:', predictResponse.data);
-                const { prediction, model_probability } = predictResponse.data;
+                const { prediction } = predictResponse.data;
 
-                // Log or handle prediction results
-                console.log('Prediction:', prediction);
-                console.log('Model Probability:', model_probability);
+                // Check for consecutive "Not Same User" predictions
+                if (prediction === 'Not Same User') {
+                  setConsecutiveDifferentUsers((prevCount) => {
+                    const newCount = prevCount + 1;
+                    if (newCount >= 3) {
+                      alert('ALERT: The user appears to be different for 3 consecutive checks!');
+                      return 0; // Reset the counter after raising the alert
+                    }
+                    return newCount;
+                  });
+                } else {
+                  setConsecutiveDifferentUsers(0); // Reset counter if the user is the same
+                }
               }
             }
           }
