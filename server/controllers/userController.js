@@ -333,9 +333,16 @@ const getRelevantPosts = async (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  res.clearCookie("token");
+  return res.json({ status: true, message: "Logged out successfully" });
+};
+
+
 
 
 export {
+  logout,
   signup,
   login,
   forgotPassword,
