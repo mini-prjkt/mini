@@ -55,7 +55,7 @@ router.post('/update-behavior', async (req, res) => {
     user.behavioralData.typingSpeeds.push(typingAverage);
 
     // Ensure only 10 slices are stored
-    if (user.behavioralData.typingSpeeds.length > 100) {
+    if (user.behavioralData.typingSpeeds.length > 10) {
       user.behavioralData.typingSpeeds.shift(); // Remove the oldest entry
     }
 

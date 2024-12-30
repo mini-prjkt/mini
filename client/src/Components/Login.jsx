@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../css/login.css";
+import "../css/signup.css";
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -7,7 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   Axios.defaults.withCredentials = true;
   const handleSubmit = (e) => {
@@ -15,56 +15,38 @@ const Login = () => {
     Axios.post("http://localhost:5000/auth/login", {
       email,
       password,
-    })
-      .then((response) => {
-        if (response.data.status) {
-          navigate("/interest");
+    }).then(response => {
+        if(response.data.status) {
+            navigate('/interest')
         }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }).catch(err => {
+        console.log(err)
+    })
   };
-
   return (
-    <div className="main-login">
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-heading">Login</h2>
+    <div className="sign-up-container">
+      <form className="sign-up-form" onSubmit={handleSubmit}>
+        <h2>LOGIN</h2>
 
-        <div className="login-field">
-          <label htmlFor="email" className="login-label">Email:</label>
-          <input
-            type="email"
-            id="email"
-            className="login-input"
-            autoComplete="off"
-            placeholder="Enter your email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          autoComplete="off"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <div className="login-field">
-          <label htmlFor="password" className="login-label">Password:</label>
-          <input
-            type="password"
-            id="password"
-            className="login-input"
-            placeholder="Enter your password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          placeholder="******"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        <button type="submit" className="login-button">Login</button>
-
-        <div className="login-links">
-          <Link to="/forgotPassword" className="forgot-password-link">Forgot Password?</Link>
-          <p className="signup-link-text">
-            Don't have an account? <Link to="/signup" className="signup-link">Sign Up</Link>
-          </p>
-        </div>
+        <button type="submit">Login</button>
+        <Link to="/forgotPassword">Forgot Password?</Link>
+        <p>Don't Have Account? <Link to="/signup">Sign Up</Link></p> 
       </form>
-    </div>
     </div>
   );
 };
