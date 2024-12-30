@@ -20,7 +20,7 @@ import { User } from "../models/User.js"; // Ensure the correct path for your Us
 
 const router = express.Router();
 
-// Existing routes
+// Authentication Routes
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
@@ -32,6 +32,8 @@ router.get("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ status: true, message: "Logged out successfully" });
 });
+
+// User Information Routes
 router.post("/userinfo", getUserInfo);
 router.post("/confirm-interest", confirmInterest);
 router.post("/update-country", updateCountry);
@@ -45,23 +47,27 @@ router.post("/searchUserss", verifyUser, searchUsers);
 
 // Update behavioral data dynamically and recalculate averages
 router.post('/update-behavior', async (req, res) => {
-  const { userId, typingAverage } = req.body;
+  const { userId, typingAverage, scrollAverage } = req.body;
 
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Append the new average
+    // Append new averages
     user.behavioralData.typingSpeeds.push(typingAverage);
+    user.behavioralData.scrollSpeeds.push(scrollAverage);
 
-    // Ensure only 10 slices are stored
+    // Ensure only 10 entries are stored
     if (user.behavioralData.typingSpeeds.length > 10) {
-      user.behavioralData.typingSpeeds.shift(); // Remove the oldest entry
+      user.behavioralData.typingSpeeds.shift();
+    }
+    if (user.behavioralData.scrollSpeeds.length > 10) {
+      user.behavioralData.scrollSpeeds.shift();
     }
 
     user.behavioralData.updatedAt = new Date();
 
-    // Save the updated user data
+    // Save updated user data
     await user.save();
 
     res.status(200).json({ message: 'Behavioral data updated successfully' });
@@ -81,7 +87,7 @@ router.post('/update-average', async (req, res) => {
     const typingSpeeds = [...user.behavioralData.typingSpeeds];
     const scrollSpeeds = [...user.behavioralData.scrollSpeeds];
 
-    // Exclude the most recent value
+    // Exclude the most recent value for recalculation
     if (typingSpeeds.length > 1) typingSpeeds.pop();
     if (scrollSpeeds.length > 1) scrollSpeeds.pop();
 
@@ -114,7 +120,6 @@ router.post('/update-vector', async (req, res) => {
   const { userId } = req.body;
 
   try {
-    // Find the user by ID
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -128,7 +133,6 @@ router.post('/update-vector', async (req, res) => {
     // Update the vector field
     user.vector = [typingAverage, scrollAverage, latestTypingSpeed, latestScrollSpeed];
 
-    // Save the updated user document
     await user.save();
 
     res.status(200).json({

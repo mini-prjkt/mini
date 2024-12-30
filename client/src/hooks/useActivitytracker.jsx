@@ -3,13 +3,16 @@ import axios from "axios";
 
 const useActivityTracker = () => {
   const [typingSpeedData, setTypingSpeedData] = useState([]);
+  const [scrollSpeedData, setScrollSpeedData] = useState([]);
   const [averageTypingSpeed, setAverageTypingSpeed] = useState(0);
+  const [averageScrollSpeed, setAverageScrollSpeed] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [userId, setUserId] = useState(null);
   const [consecutiveDifferentUsers, setConsecutiveDifferentUsers] = useState(0);
   const lastTypingTime = useRef(0);
+  const lastScrollTime = useRef(0);
+  const lastScrollPosition = useRef(0);
 
-  // Fetch the user ID on initial mount
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -25,11 +28,9 @@ const useActivityTracker = () => {
         console.error("Error fetching userId:", err);
       }
     };
-
     fetchUserId();
   }, []);
 
-  // Logout the user
   const logoutUser = async () => {
     try {
       const res = await axios.get("http://localhost:5000/auth/logout", {
@@ -37,7 +38,7 @@ const useActivityTracker = () => {
       });
       if (res.data.status) {
         alert("You have been logged out due to suspicious activity.");
-        window.location.reload(); // Redirect to login page or refresh
+        window.location.reload();
       } else {
         console.error("Error during logout:", res.data.message);
       }
@@ -46,7 +47,6 @@ const useActivityTracker = () => {
     }
   };
 
-  // Capture typing speed on keydown
   const captureTypingSpeed = () => {
     setIsActive(true);
     const currentTime = Date.now();
@@ -59,29 +59,40 @@ const useActivityTracker = () => {
     lastTypingTime.current = currentTime;
   };
 
-  // Calculate average of data array
-  const calculateAverage = (data) => {
-    if (!Array.isArray(data) || data.length === 0) return 0;
-    return parseFloat(
-      (data.reduce((sum, value) => sum + value, 0) / data.length).toFixed(2)
-    );
+  const captureScrollSpeed = (e) => {
+    const currentTime = Date.now();
+    const currentPosition = window.scrollY || e.target.scrollTop || 0;
+    if (lastScrollTime.current !== 0) {
+      const scrollSpeed = Math.abs(currentPosition - lastScrollPosition.current) / (currentTime - lastScrollTime.current);
+      if (scrollSpeed > 0 && scrollSpeed < 10) { // Adjust threshold as needed
+        setScrollSpeedData((prevData) => [...prevData, scrollSpeed]);
+      }
+    }
+    lastScrollPosition.current = currentPosition;
+    lastScrollTime.current = currentTime;
   };
 
-  // Send behavioral data and check prediction
+  const calculateAverage = (data) => {
+    if (!Array.isArray(data) || data.length === 0) return 0;
+    return parseFloat((data.reduce((sum, value) => sum + value, 0) / data.length).toFixed(2));
+  };
+
   const sendBehavioralData = async () => {
-    if (userId && typingSpeedData.length > 0) {
+    if (userId && (typingSpeedData.length > 0 || scrollSpeedData.length > 0)) {
       const typingAverage = calculateAverage(typingSpeedData);
+      const scrollAverage = calculateAverage(scrollSpeedData);
 
       try {
         const response = await axios.post(
           "http://localhost:5000/auth/update-behavior",
-          { userId, typingAverage },
+          { userId, typingAverage, scrollAverage },
           { withCredentials: true }
         );
 
         if (response.status === 200) {
           console.log("Behavioral data updated successfully");
           setTypingSpeedData([]);
+          setScrollSpeedData([]);
 
           const avgResponse = await axios.post(
             "http://localhost:5000/auth/update-average",
@@ -114,20 +125,18 @@ const useActivityTracker = () => {
                   scrolling_deviation_absolute,
                 } = predictResponse.data;
 
-                // Log the prediction results
                 console.log("Predict API Response:", predictResponse.data);
                 console.log(`Prediction: ${prediction}, Model Probability: ${model_probability}`);
                 console.log(
                   `Typing Deviation: ${typing_deviation_absolute}, Scrolling Deviation: ${scrolling_deviation_absolute}`
                 );
 
-                // Handle consecutive "Not Same User" predictions
                 if (prediction === "Not Same User") {
                   setConsecutiveDifferentUsers((prevCount) => {
                     const newCount = prevCount + 1;
                     if (newCount >= 3) {
-                      logoutUser(); // Log out after 3 consecutive "Not Same User"
-                      return 0; // Reset counter after logout
+                      logoutUser();
+                      return 0;
                     }
                     return newCount;
                   });
@@ -147,30 +156,30 @@ const useActivityTracker = () => {
     }
   };
 
-  // Listen for typing activity
   useEffect(() => {
     window.addEventListener("keydown", captureTypingSpeed);
+    window.addEventListener("scroll", captureScrollSpeed);
 
     return () => {
       window.removeEventListener("keydown", captureTypingSpeed);
+      window.removeEventListener("scroll", captureScrollSpeed);
     };
   }, []);
 
-  // Send data periodically if activity is detected
   useEffect(() => {
     const interval = setInterval(() => {
       if (isActive) {
-        const avgTyping = calculateAverage(typingSpeedData);
-        setAverageTypingSpeed(avgTyping);
+        setAverageTypingSpeed(calculateAverage(typingSpeedData));
+        setAverageScrollSpeed(calculateAverage(scrollSpeedData));
         sendBehavioralData();
         setIsActive(false);
       }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isActive, typingSpeedData]);
+  }, [isActive, typingSpeedData, scrollSpeedData]);
 
-  return { averageTypingSpeed };
+  return { averageTypingSpeed, averageScrollSpeed };
 };
 
 export default useActivityTracker;
