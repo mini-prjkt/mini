@@ -59,16 +59,12 @@ const useActivityTracker = () => {
     lastTypingTime.current = currentTime;
   };
 
-  const captureScrollSpeed = () => {
+  const captureScrollSpeed = (e) => {
     const currentTime = Date.now();
-    const currentPosition =
-      window.scrollY || document.documentElement.scrollTop || 0;
-
+    const currentPosition = window.scrollY || e.target.scrollTop || 0;
     if (lastScrollTime.current !== 0) {
-      const scrollSpeed =
-        Math.abs(currentPosition - lastScrollPosition.current) /
-        (currentTime - lastScrollTime.current);
-      if (scrollSpeed > 0 && scrollSpeed < 10) {
+      const scrollSpeed = Math.abs(currentPosition - lastScrollPosition.current) / (currentTime - lastScrollTime.current);
+      if (scrollSpeed > 0 && scrollSpeed < 10) { // Adjust threshold as needed
         setScrollSpeedData((prevData) => [...prevData, scrollSpeed]);
       }
     }
@@ -161,14 +157,12 @@ const useActivityTracker = () => {
   };
 
   useEffect(() => {
-    const debouncedCaptureScrollSpeed = debounce(captureScrollSpeed, 100);
-
     window.addEventListener("keydown", captureTypingSpeed);
-    window.addEventListener("scroll", debouncedCaptureScrollSpeed);
+    window.addEventListener("scroll", captureScrollSpeed);
 
     return () => {
       window.removeEventListener("keydown", captureTypingSpeed);
-      window.removeEventListener("scroll", debouncedCaptureScrollSpeed);
+      window.removeEventListener("scroll", captureScrollSpeed);
     };
   }, []);
 
@@ -184,14 +178,6 @@ const useActivityTracker = () => {
 
     return () => clearInterval(interval);
   }, [isActive, typingSpeedData, scrollSpeedData]);
-
-  const debounce = (func, delay) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), delay);
-    };
-  };
 
   return { averageTypingSpeed, averageScrollSpeed };
 };

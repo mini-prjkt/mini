@@ -15,7 +15,6 @@ import Notification from './Components/Notification'
 import Connections from './Components/Connections'
 import Chat from './Components/Chat'
 import useActivityTracker from './hooks/useActivitytracker';
-import ScrollingSpeed from './test/ScrollingSpeed'
 
 function App() {
   const { averageTypingSpeed, averageScrollSpeed } = useActivityTracker();
@@ -31,7 +30,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/interest" element={<Interest />}></Route>
         <Route path="/welcome" element={<WelcomePage />}></Route>
-        <Route path="/scrollspeed" element={<ScrollingSpeed/>}></Route>
+        
         <Route path="/profile" element={<UserProfile/>}></Route>
         <Route path="/addpost" element={<AddPost/>}></Route>
         <Route path="/viewpost" element={<MyPost/>}></Route>
