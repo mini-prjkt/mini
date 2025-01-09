@@ -7,7 +7,7 @@ import ResetPassword from './Components/ResetPassword'
 import Dashboard from './Components/Dashboard'
 import Interest from './Components/Interest'
 import WelcomePage from './Components/WelcomePage'
-
+import Test from './test/Test'
 import UserProfile from './Components/UserProfile'
 import AddPost from './Components/AddPost'
 import MyPost from './Components/MyPost'
@@ -30,7 +30,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/interest" element={<Interest />}></Route>
         <Route path="/welcome" element={<WelcomePage />}></Route>
-        
+        <Route path='/test' element={<Test/>}></Route>
         <Route path="/profile" element={<UserProfile/>}></Route>
         <Route path="/addpost" element={<AddPost/>}></Route>
         <Route path="/viewpost" element={<MyPost/>}></Route>
