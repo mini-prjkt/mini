@@ -88,6 +88,7 @@ router.post('/update-behavior', async (req, res) => {
 });
 
 
+
 router.post('/update-average', async (req, res) => {
   const { userId } = req.body;
 
@@ -147,6 +148,7 @@ router.post('/update-average', async (req, res) => {
   }
 });
 
+
 router.post('/update-vector', async (req, res) => {
   const { userId } = req.body;
 
@@ -201,5 +203,7 @@ router.post('/update-vector', async (req, res) => {
     res.status(500).json({ message: 'Error updating vector', error });
   }
 });
+
+
 
 export { router as UserRouter };

@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     interests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Interest' }],
     country: { type: String },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-
+  
     // Behavioral Data
     behavioralData: {
         typingSpeeds: [{ type: Number }],
@@ -26,14 +26,15 @@ const UserSchema = new mongoose.Schema({
       
         updatedAt: { type: Date, default: Date.now },
       },
-      
+  
     // ML Model Tracking
     retrainingRequired: { type: Boolean, default: false },
     profileScore: { type: Number, default: 0 },
-
+  
     // Vector Embedding
-    vector: [{ type: Number }]
-});
+    vector: [{ type: Number }],
+  });
+  
 const User = mongoose.model("User", UserSchema);
 
 export { User };

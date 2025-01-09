@@ -6,14 +6,14 @@ const useActivityTracker = () => {
   const [scrollSpeedData, setScrollSpeedData] = useState([]);
   const [messageLengthData, setMessageLengthData] = useState([]);
   const [punctuationFrequencyData, setPunctuationFrequencyData] = useState([]);
-  const [uppercaseRatioData, setUppercaseRatioData] = useState([]); // NEW: Track uppercase ratio
-  const [lowercaseRatioData, setLowercaseRatioData] = useState([]); // NEW: Track lowercase ratio
+  const [uppercaseRatioData, setUppercaseRatioData] = useState([]);
+  const [lowercaseRatioData, setLowercaseRatioData] = useState([]);
   const [averageTypingSpeed, setAverageTypingSpeed] = useState(0);
   const [averageScrollSpeed, setAverageScrollSpeed] = useState(0);
   const [averageMessageLength, setAverageMessageLength] = useState(0);
   const [averagePunctuationFrequency, setAveragePunctuationFrequency] = useState(0);
-  const [averageUppercaseRatio, setAverageUppercaseRatio] = useState(0); // NEW: Track uppercase ratio average
-  const [averageLowercaseRatio, setAverageLowercaseRatio] = useState(0); // NEW: Track lowercase ratio average
+  const [averageUppercaseRatio, setAverageUppercaseRatio] = useState(0);
+  const [averageLowercaseRatio, setAverageLowercaseRatio] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [userId, setUserId] = useState(null);
   const [consecutiveDifferentUsers, setConsecutiveDifferentUsers] = useState(0);
@@ -122,8 +122,8 @@ const useActivityTracker = () => {
       const scrollAverage = calculateAverage(scrollSpeedData);
       const messageLengthAverage = calculateAverage(messageLengthData);
       const punctuationFrequencyAverage = calculateAverage(punctuationFrequencyData);
-      const uppercaseRatioAverage = calculateAverage(uppercaseRatioData); // NEW: Calculate uppercase average
-      const lowercaseRatioAverage = calculateAverage(lowercaseRatioData); // NEW: Calculate lowercase average
+      const uppercaseRatioAverage = calculateAverage(uppercaseRatioData);
+      const lowercaseRatioAverage = calculateAverage(lowercaseRatioData);
 
       try {
         const response = await axios.post(
@@ -135,7 +135,7 @@ const useActivityTracker = () => {
             messageLengthAverage,
             punctuationFrequencyAverage,
             uppercaseRatioAverage,
-            lowercaseRatioAverage, // NEW: Send lowercase average
+            lowercaseRatioAverage,
           },
           { withCredentials: true }
         );
@@ -147,7 +147,7 @@ const useActivityTracker = () => {
           setMessageLengthData([]);
           setPunctuationFrequencyData([]);
           setUppercaseRatioData([]);
-          setLowercaseRatioData([]); // NEW: Reset lowercase ratio data
+          setLowercaseRatioData([]);
 
           const avgResponse = await axios.post(
             "http://localhost:5000/auth/update-average",
@@ -166,23 +166,58 @@ const useActivityTracker = () => {
 
             if (vectorResponse.status === 200) {
               console.log("Vector updated successfully:", vectorResponse.data);
+
+              // Call the predict API
+              const predictResponse = await axios.post(
+                "http://localhost:5003/predict-same-or-not",
+                { user_id: userId },
+                { withCredentials: true }
+              );
+
+              if (predictResponse.status === 200) {
+                const {
+                  prediction,
+                  model_probability,
+                  typing_deviation_absolute,
+                  scrolling_deviation_absolute,
+                } = predictResponse.data;
+
+                console.log("Predict API Response:", predictResponse.data);
+                console.log(`Prediction: ${prediction}, Model Probability: ${model_probability}`);
+                console.log(
+                  `Typing Deviation: ${typing_deviation_absolute}, Scrolling Deviation: ${scrolling_deviation_absolute}`
+                );
+
+                if (prediction === "Not Same User") {
+                  setConsecutiveDifferentUsers((prevCount) => {
+                    const newCount = prevCount + 1;
+                    if (newCount >= 3) {
+                      logoutUser();
+                      return 0;
+                    }
+                    return newCount;
+                  });
+                } else {
+                  setConsecutiveDifferentUsers(0);
+                }
+              }
             }
           }
         }
       } catch (error) {
-        console.error("Error updating behavioral data, averages, vector:", error);
+        console.error("Error updating behavioral data, averages, vector, or prediction:", error);
       }
     }
   };
 
   useEffect(() => {
     window.addEventListener("keydown", captureTypingSpeed);
-    window.addEventListener("input", captureMessageCharacteristics); // NEW: Listen for input events
+    window.addEventListener("input", captureMessageCharacteristics);
     window.addEventListener("scroll", captureScrollSpeed);
 
     return () => {
       window.removeEventListener("keydown", captureTypingSpeed);
-      window.removeEventListener("input", captureMessageCharacteristics); // NEW: Remove listener
+      window.removeEventListener("input", captureMessageCharacteristics);
       window.removeEventListener("scroll", captureScrollSpeed);
     };
   }, []);
@@ -194,23 +229,23 @@ const useActivityTracker = () => {
         setAverageScrollSpeed(calculateAverage(scrollSpeedData));
         setAverageMessageLength(calculateAverage(messageLengthData));
         setAveragePunctuationFrequency(calculateAverage(punctuationFrequencyData));
-        setAverageUppercaseRatio(calculateAverage(uppercaseRatioData)); // NEW: Update uppercase average
-        setAverageLowercaseRatio(calculateAverage(lowercaseRatioData)); // NEW: Update lowercase average
+        setAverageUppercaseRatio(calculateAverage(uppercaseRatioData));
+        setAverageLowercaseRatio(calculateAverage(lowercaseRatioData));
         sendBehavioralData();
         setIsActive(false);
       }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isActive, typingSpeedData, scrollSpeedData, messageLengthData, punctuationFrequencyData, uppercaseRatioData, lowercaseRatioData]); // NEW: Add dependencies
+  }, [isActive, typingSpeedData, scrollSpeedData, messageLengthData, punctuationFrequencyData, uppercaseRatioData, lowercaseRatioData]);
 
   return {
     averageTypingSpeed,
     averageScrollSpeed,
     averageMessageLength,
     averagePunctuationFrequency,
-    averageUppercaseRatio, // NEW: Return uppercase average
-    averageLowercaseRatio, // NEW: Return lowercase average
+    averageUppercaseRatio,
+    averageLowercaseRatio,
   };
 };
 
